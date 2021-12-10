@@ -19,6 +19,8 @@ glueContext = GlueContext(SparkContext.getOrCreate())
 spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
 spark.conf.set("spark.sql.debug.maxToStringFields", 1000)
 
+
+
 today = date.today()
 report_date = today - timedelta(days=1)
 print("report date is: ", report_date)
@@ -191,12 +193,6 @@ misDf.withColumn("period", when(misDf.period == report_date- timedelta(days=0),"
       .when(misDf.period == report_date- timedelta(days=6),"D6") \
       .otherwise(misDf.period))
 
-    #   misDf.queryExecution.toString
-    #   misDf.queryExecution.logical.toString
-    #   misDf.queryExecution.optimizedPlan.toString
-    #   misDf.queryExecution.executedPlan
-
-misDf.explain()
 
 ###############################################
 ### Saving data to redhsift  :-mis report table
@@ -215,6 +211,7 @@ glueContext.write_dynamic_frame.from_jdbc_conf(
 )
 
 print("saving data to Database  completed")
+
 
 
 
