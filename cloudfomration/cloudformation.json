@@ -1,0 +1,3481 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "Env": {
+      "AllowedValues": [
+        "dev",
+        "stage",
+        "prod"
+      ],
+      "Default": "dev",
+      "Description": "Please select a Environment",
+      "Type": "String"
+    },
+    "UserName": {
+      "Type": "String",
+      "Description": "Please enter your userName",
+      "AllowedPattern": "^[a-z]+$"
+    }
+  },
+  "Resources": {
+    "AggreatingGlueRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "glue.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "RoleName": {
+          "Fn::Join": [
+            "-",
+            [
+              "semi-automated",
+              "glueRole",
+              {
+                "Fn::If": [
+                  "IsDev",
+                  {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        {
+                          "Ref": "Env"
+                        },
+                        {
+                          "Ref": "UserName"
+                        }
+                      ]
+                    ]
+                  },
+                  {
+                    "Ref": "Env"
+                  }
+                ]
+              }
+            ]
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "semi-automated",
+                  "aggregationglueservicerole",
+                  {
+                    "Fn::If": [
+                      "IsDev",
+                      {
+                        "Fn::Join": [
+                          "-",
+                          [
+                            {
+                              "Ref": "Env"
+                            },
+                            {
+                              "Ref": "UserName"
+                            }
+                          ]
+                        ]
+                      },
+                      {
+                        "Ref": "Env"
+                      }
+                    ]
+                  }
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "cloudWatchWriteAccess",
+                  "Effect": "Allow",
+                  "Action": [
+                    "cloudwatch:PutMetricData"
+                  ],
+                  "Resource": [
+                    "*"
+                  ]
+                },
+                {
+                  "Sid": "ec2Access",
+                  "Effect": "Allow",
+                  "Action": [
+                    "ec2:DescribeVpcEndpoints",
+                    "ec2:DescribeRouteTables",
+                    "ec2:CreateNetworkInterface",
+                    "ec2:DeleteNetworkInterface",
+                    "ec2:DescribeNetworkInterfaces",
+                    "ec2:DescribeSecurityGroups",
+                    "ec2:DescribeSubnets",
+                    "ec2:DescribeVpcAttribute"
+                  ],
+                  "Resource": [
+                    "*"
+                  ]
+                },
+                {
+                  "Sid": "glueFullAcess",
+                  "Effect": "Allow",
+                  "Action": [
+                    "glue:*"
+                  ],
+                  "Resource": [
+                    "*"
+                  ]
+                },
+                {
+                  "Sid": "iamReadFullAccess",
+                  "Effect": "Allow",
+                  "Action": [
+                    "iam:ListRolePolicies",
+                    "iam:GetRole",
+                    "iam:GetRolePolicy"
+                  ],
+                  "Resource": [
+                    "*"
+                  ]
+                },
+                {
+                  "Sid": "logsReadWriteAccess",
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": [
+                    "arn:aws:logs:*:*:/aws-glue/*"
+                  ]
+                },
+                {
+                  "Sid": "s3ReadAccess",
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:GetBucketLocation",
+                    "s3:ListBucket",
+                    "s3:ListAllMyBuckets",
+                    "s3:GetBucketAcl"
+                  ],
+                  "Resource": [
+                    "*"
+                  ]
+                },
+                {
+                  "Sid": "s3CreateBucketAccess",
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:CreateBucket"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::aws-glue-*"
+                  ]
+                },
+                {
+                  "Sid": "s3ReadWriteAccess",
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:GetObject",
+                    "s3:PutObject",
+                    "s3:DeleteObject"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::crawler-public*",
+                    "arn:aws:s3:::aws-glue-*/*",
+                    "arn:aws:s3:::*/*aws-glue-*/*",
+                    "arn:aws:s3:::*/*semi-automated-dev*/*"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ec2:CreateTags",
+                    "ec2:DeleteTags"
+                  ],
+                  "Condition": {
+                    "ForAllValues:StringEquals": {
+                      "aws:TagKeys": [
+                        "aws-glue-service-resource"
+                      ]
+                    }
+                  },
+                  "Resource": [
+                    "arn:aws:ec2:*:*:network-interface/*",
+                    "arn:aws:ec2:*:*:security-group/*",
+                    "arn:aws:ec2:*:*:instance/*"
+                  ]
+                },
+                {
+                  "Sid": "AllowGlueToPutEvents",
+                  "Effect": "Allow",
+                  "Action": "events:PutEvents",
+                  "Resource": "*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "semi-automated",
+                  "s3mappingbucketrole",
+                  {
+                    "Fn::If": [
+                      "IsDev",
+                      {
+                        "Fn::Join": [
+                          "-",
+                          [
+                            {
+                              "Ref": "Env"
+                            },
+                            {
+                              "Ref": "UserName"
+                            }
+                          ]
+                        ]
+                      },
+                      {
+                        "Ref": "Env"
+                      }
+                    ]
+                  }
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "s3:*",
+                  "Resource": [
+                    "arn:aws:s3:::semi-automated-dev*",
+                    "arn:aws:s3:::semi-automated-dev/*"
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "DIP-Semi-Automated"
+          },
+          {
+            "Key": "Env",
+            "Value": {
+              "Ref": "Env"
+            }
+          },
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "UserName"
+            }
+          }
+        ]
+      }
+    },
+    "FlipkartVillainSalesTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "flipkart-villain-sales",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for FlipkartVillainSalesTable",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "product id",
+                "Type": "string"
+              },
+              {
+                "Name": "sku id",
+                "Type": "string"
+              },
+              {
+                "Name": "category",
+                "Type": "string"
+              },
+              {
+                "Name": "brand",
+                "Type": "string"
+              },
+              {
+                "Name": "vertical",
+                "Type": "string"
+              },
+              {
+                "Name": "order date",
+                "Type": "string"
+              },
+              {
+                "Name": "fulfillment Type",
+                "Type": "string"
+              },
+              {
+                "Name": "Location id",
+                "Type": "string"
+              },
+              {
+                "Name": "gross units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "gmv",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancellation units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancellation amount",
+                "Type": "bigint"
+              },
+              {
+                "Name": "return units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "return amount",
+                "Type": "bigint"
+              },
+              {
+                "Name": "final sale units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "final sale amount",
+                "Type": "bigint"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=flipkart/dip-brand=villain/dip-type=sales/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "CloudTailHeleaSalesTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "cloudtail-helea-sales",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for CloudTailHeleaSalesTable",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 2
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "ASIN",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Title",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Revenue",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Revenue - % of Total",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Revenue - Prior Period",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Revenue - Last Year",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Units",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Units - % of Total",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Units - Prior Period",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Units - Last Year",
+                "Type": "string"
+              },
+              {
+                "Name": "Customer Returns",
+                "Type": "string"
+              },
+              {
+                "Name": "Free Replacements",
+                "Type": "string"
+              },
+              {
+                "Name": "Average Sales Price",
+                "Type": "string"
+              },
+              {
+                "Name": "Average Sales Price - Prior Period",
+                "Type": "string"
+              },
+              {
+                "Name": "Date",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=cloudtail/dip-brand=helea/dip-type=sales/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "CloudTailDennisLingoSalesTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "cloudtail-dennislingo-sales",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for CloudTailDennisLingoSalesTable",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 2
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "ASIN",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Title",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Revenue",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Revenue - % of Total",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Revenue - Prior Period",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Revenue - Last Year",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Units",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Units - % of Total",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Units - Prior Period",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Units - Last Year",
+                "Type": "string"
+              },
+              {
+                "Name": "Customer Returns",
+                "Type": "string"
+              },
+              {
+                "Name": "Free Replacements",
+                "Type": "string"
+              },
+              {
+                "Name": "Average Sales Price",
+                "Type": "string"
+              },
+              {
+                "Name": "Average Sales Price - Prior Period",
+                "Type": "string"
+              },
+              {
+                "Name": "Date",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=cloudtail/dip-brand=dennis_lingo/dip-type=sales/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "CloudTailIshinSalesTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "cloudtail-ishin-sales",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for CloudTailIshinalesTable",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 2
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "ASIN",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Title",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Revenue",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Revenue - % of Total",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Revenue - Prior Period",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Revenue - Last Year",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Units",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Units - % of Total",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Units - Prior Period",
+                "Type": "string"
+              },
+              {
+                "Name": "Shipped Units - Last Year",
+                "Type": "string"
+              },
+              {
+                "Name": "Customer Returns",
+                "Type": "string"
+              },
+              {
+                "Name": "Free Replacements",
+                "Type": "string"
+              },
+              {
+                "Name": "Average Sales Price",
+                "Type": "string"
+              },
+              {
+                "Name": "Average Sales Price - Prior Period",
+                "Type": "string"
+              },
+              {
+                "Name": "Date",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=cloudtail/dip-brand=ishin/dip-type=sales/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "AjioJitDennisB2BTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "ajiojit-denislingo-b2b",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Ajio-Jit-DenisLingo-B2b",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "order_number",
+                "Type": "string"
+              },
+              {
+                "Name": "order_date",
+                "Type": "string"
+              },
+              {
+                "Name": "order_status",
+                "Type": "string"
+              },
+              {
+                "Name": "purchase_order_number",
+                "Type": "bigint"
+              },
+              {
+                "Name": "purchase_order_date",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_number",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_date",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_value",
+                "Type": "double"
+              },
+              {
+                "Name": "item_code",
+                "Type": "bigint"
+              },
+              {
+                "Name": "ean",
+                "Type": "string"
+              },
+              {
+                "Name": "product_Name",
+                "Type": "string"
+              },
+              {
+                "Name": "description",
+                "Type": "string"
+              },
+              {
+                "Name": "order_quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancelled_quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "shipped_quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "dispatched_on",
+                "Type": "string"
+              },
+              {
+                "Name": "fulfillment_Type",
+                "Type": "string"
+              },
+              {
+                "Name": "dispatch_sla_status",
+                "Type": "string"
+              },
+              {
+                "Name": "discounted_seller_price",
+                "Type": "double"
+              },
+              {
+                "Name": "seller_total_discount",
+                "Type": "double"
+              },
+              {
+                "Name": "base_price",
+                "Type": "double"
+              },
+              {
+                "Name": "cgst_percent",
+                "Type": "double"
+              },
+              {
+                "Name": "cgst_amount",
+                "Type": "double"
+              },
+              {
+                "Name": "sgst_percent",
+                "Type": "double"
+              },
+              {
+                "Name": "sgst_amount",
+                "Type": "double"
+              },
+              {
+                "Name": "igst_percent",
+                "Type": "double"
+              },
+              {
+                "Name": "igst_amount",
+                "Type": "double"
+              },
+              {
+                "Name": "mrp",
+                "Type": "double"
+              },
+              {
+                "Name": "listing_mrp",
+                "Type": "double"
+              },
+              {
+                "Name": "total_base_price",
+                "Type": "double"
+              },
+              {
+                "Name": "total_value",
+                "Type": "double"
+              },
+              {
+                "Name": "seller_id",
+                "Type": "string"
+              },
+              {
+                "Name": "pob_id",
+                "Type": "string"
+              },
+              {
+                "Name": "seller_Name",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=ajio_jit/dip-brand=dennis_lingo/dip-type=b2b/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "FlipkartIshinSalesTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "flipkart-ishin-sales",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Flipkart-ishin-Sales",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "product id",
+                "Type": "string"
+              },
+              {
+                "Name": "sku id",
+                "Type": "string"
+              },
+              {
+                "Name": "category",
+                "Type": "string"
+              },
+              {
+                "Name": "brand",
+                "Type": "string"
+              },
+              {
+                "Name": "vertical",
+                "Type": "string"
+              },
+              {
+                "Name": "order date",
+                "Type": "string"
+              },
+              {
+                "Name": "fulfillment Type",
+                "Type": "string"
+              },
+              {
+                "Name": "Location id",
+                "Type": "string"
+              },
+              {
+                "Name": "gross units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "gmv",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancellation units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancellation amount",
+                "Type": "bigint"
+              },
+              {
+                "Name": "return units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "return amount",
+                "Type": "bigint"
+              },
+              {
+                "Name": "final sale units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "final sale amount",
+                "Type": "bigint"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=flipkart/dip-brand=ishin/dip-type=sales/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "MeeshoAnubhuteeSalesTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "meesho-anubhutee-sales",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Meesho-Anubhutee-Sales",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "Type",
+                "Type": "string"
+              },
+              {
+                "Name": "Reason for Credit Entry",
+                "Type": "string"
+              },
+              {
+                "Name": "Sub Order No",
+                "Type": "string"
+              },
+              {
+                "Name": "Order Verification Date",
+                "Type": "string"
+              },
+              {
+                "Name": "Order Date",
+                "Type": "string"
+              },
+              {
+                "Name": "Cust Name",
+                "Type": "string"
+              },
+              {
+                "Name": "Cust address",
+                "Type": "string"
+              },
+              {
+                "Name": "Reseller State",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Name",
+                "Type": "string"
+              },
+              {
+                "Name": "SKU",
+                "Type": "string"
+              },
+              {
+                "Name": "Size",
+                "Type": "string"
+              },
+              {
+                "Name": "Quantity",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Unit Price (Incl. GST + Commission)",
+                "Type": "string"
+              },
+              {
+                "Name": "Total Sales Amount (Incl. GST + Commission)",
+                "Type": "string"
+              },
+              {
+                "Name": "Net Sales Amount(Incl GST + Commision)",
+                "Type": "string"
+              },
+              {
+                "Name": "Delivery Revenue (Incl. of GST)",
+                "Type": "string"
+              },
+              {
+                "Name": "GST% on Product Price and Delivery",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Taxable Value",
+                "Type": "string"
+              },
+              {
+                "Name": "Delivery Taxable Value",
+                "Type": "string"
+              },
+              {
+                "Name": "GST Payable on Product",
+                "Type": "string"
+              },
+              {
+                "Name": "GST Payable on Delivery",
+                "Type": "string"
+              },
+              {
+                "Name": "Total Meesho commission (Incl. GST)",
+                "Type": "string"
+              },
+              {
+                "Name": "GST on Total Meesho Commission",
+                "Type": "string"
+              },
+              {
+                "Name": "Delivery Charge(excl Gst)",
+                "Type": "string"
+              },
+              {
+                "Name": "GST on delivery charges",
+                "Type": "string"
+              },
+              {
+                "Name": "Supplier State",
+                "Type": "string"
+              },
+              {
+                "Name": "TCS (IGST)",
+                "Type": "string"
+              },
+              {
+                "Name": "TCS (0.5% CGST+0.5% SGST)",
+                "Type": "string"
+              },
+              {
+                "Name": "Settlement Amount to Supplier",
+                "Type": "string"
+              },
+              {
+                "Name": "Invoice Download Link",
+                "Type": "string"
+              },
+              {
+                "Name": "CN Download Link",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=meesho/dip-brand=anubhutee/dip-type=sales/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "AjioJitAnubhuteeB2BTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "ajiojit-anubhutee-b2b",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for AjioJit-Anubhutee-B2b",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "order_number",
+                "Type": "string"
+              },
+              {
+                "Name": "order_date",
+                "Type": "string"
+              },
+              {
+                "Name": "order_status",
+                "Type": "string"
+              },
+              {
+                "Name": "purchase_order_number",
+                "Type": "bigint"
+              },
+              {
+                "Name": "purchase_order_date",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_number",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_date",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_value",
+                "Type": "double"
+              },
+              {
+                "Name": "item_code",
+                "Type": "bigint"
+              },
+              {
+                "Name": "ean",
+                "Type": "string"
+              },
+              {
+                "Name": "product_Name",
+                "Type": "string"
+              },
+              {
+                "Name": "description",
+                "Type": "string"
+              },
+              {
+                "Name": "order_quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancelled_quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "shipped_quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "dispatched_on",
+                "Type": "string"
+              },
+              {
+                "Name": "fulfillment_Type",
+                "Type": "string"
+              },
+              {
+                "Name": "dispatch_sla_status",
+                "Type": "string"
+              },
+              {
+                "Name": "discounted_seller_price",
+                "Type": "double"
+              },
+              {
+                "Name": "seller_total_discount",
+                "Type": "double"
+              },
+              {
+                "Name": "base_price",
+                "Type": "double"
+              },
+              {
+                "Name": "cgst_percent",
+                "Type": "double"
+              },
+              {
+                "Name": "cgst_amount",
+                "Type": "double"
+              },
+              {
+                "Name": "sgst_percent",
+                "Type": "double"
+              },
+              {
+                "Name": "sgst_amount",
+                "Type": "double"
+              },
+              {
+                "Name": "igst_percent",
+                "Type": "double"
+              },
+              {
+                "Name": "igst_amount",
+                "Type": "double"
+              },
+              {
+                "Name": "mrp",
+                "Type": "double"
+              },
+              {
+                "Name": "listing_mrp",
+                "Type": "double"
+              },
+              {
+                "Name": "total_base_price",
+                "Type": "double"
+              },
+              {
+                "Name": "total_value",
+                "Type": "double"
+              },
+              {
+                "Name": "seller_id",
+                "Type": "string"
+              },
+              {
+                "Name": "pob_id",
+                "Type": "string"
+              },
+              {
+                "Name": "seller_Name",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=ajio_jit/dip-brand=anubhutee/dip-type=b2b/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "AmazonBulfyssSkuTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "amazon-bulfyss-sku",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Amzon-Bulfyss-Sku",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "(parent) asin",
+                "Type": "string"
+              },
+              {
+                "Name": "(child) asin",
+                "Type": "string"
+              },
+              {
+                "Name": "title",
+                "Type": "string"
+              },
+              {
+                "Name": "sku",
+                "Type": "string"
+              },
+              {
+                "Name": "sessions",
+                "Type": "string"
+              },
+              {
+                "Name": "session percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "page views",
+                "Type": "string"
+              },
+              {
+                "Name": "page views percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "featured offer (buy box) percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "units ordered",
+                "Type": "bigint"
+              },
+              {
+                "Name": "unit session percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "ordered product sales",
+                "Type": "string"
+              },
+              {
+                "Name": "total order items",
+                "Type": "bigint"
+              },
+              {
+                "Name": "date",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=bulfyss/dip-type=sku/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "AjioSorHubberholmeTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "ajiosor-hubberholme-sales",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for AjioSor-Hubberholme-Sales",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "(parent) asin",
+                "Type": "string"
+              },
+              {
+                "Name": "(child) asin",
+                "Type": "string"
+              },
+              {
+                "Name": "title",
+                "Type": "string"
+              },
+              {
+                "Name": "sku",
+                "Type": "string"
+              },
+              {
+                "Name": "sessions",
+                "Type": "string"
+              },
+              {
+                "Name": "session percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "page views",
+                "Type": "string"
+              },
+              {
+                "Name": "page views percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "featured offer (buy box) percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "units ordered",
+                "Type": "bigint"
+              },
+              {
+                "Name": "unit session percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "ordered product sales",
+                "Type": "string"
+              },
+              {
+                "Name": "total order items",
+                "Type": "bigint"
+              },
+              {
+                "Name": "date",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=bulfyss/dip-type=sku/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "AmazonFolkultureUSTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "amazon-folkulture-us",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Amazon-folkulture-US",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "(parent) asin",
+                "Type": "string"
+              },
+              {
+                "Name": "(child) asin",
+                "Type": "string"
+              },
+              {
+                "Name": "title",
+                "Type": "string"
+              },
+              {
+                "Name": "sku",
+                "Type": "string"
+              },
+              {
+                "Name": "sessions",
+                "Type": "string"
+              },
+              {
+                "Name": "session percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "page views",
+                "Type": "string"
+              },
+              {
+                "Name": "page views percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "featured offer (buy box) percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "units ordered",
+                "Type": "bigint"
+              },
+              {
+                "Name": "units ordered - b2b",
+                "Type": "bigint"
+              },
+              {
+                "Name": "unit session percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "unit session percentage - b2b",
+                "Type": "string"
+              },
+              {
+                "Name": "ordered product sales",
+                "Type": "string"
+              },
+              {
+                "Name": "ordered product sales - b2b",
+                "Type": "string"
+              },
+              {
+                "Name": "total order items",
+                "Type": "bigint"
+              },
+              {
+                "Name": "total order items - b2b",
+                "Type": "bigint"
+              },
+              {
+                "Name": "date",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=folkulture/dip-type=US/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "MeeshoIShinJyporeTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "meesho-ishin-jypore",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Meesho-Ishin-Jypore",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "Type",
+                "Type": "string"
+              },
+              {
+                "Name": "Reason for Credit Entry",
+                "Type": "string"
+              },
+              {
+                "Name": "Sub Order No",
+                "Type": "string"
+              },
+              {
+                "Name": "Order Verification Date",
+                "Type": "string"
+              },
+              {
+                "Name": "Order Date",
+                "Type": "string"
+              },
+              {
+                "Name": "Cust Name",
+                "Type": "string"
+              },
+              {
+                "Name": "Cust address",
+                "Type": "string"
+              },
+              {
+                "Name": "Reseller State",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Name",
+                "Type": "string"
+              },
+              {
+                "Name": "SKU",
+                "Type": "string"
+              },
+              {
+                "Name": "Size",
+                "Type": "string"
+              },
+              {
+                "Name": "Quantity",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Unit Price (Incl. GST + Commission)",
+                "Type": "string"
+              },
+              {
+                "Name": "Total Sales Amount (Incl. GST + Commission)",
+                "Type": "string"
+              },
+              {
+                "Name": "Net Sales Amount(Incl GST + Commision)",
+                "Type": "string"
+              },
+              {
+                "Name": "Delivery Revenue (Incl. of GST)",
+                "Type": "string"
+              },
+              {
+                "Name": "GST% on Product Price and Delivery",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Taxable Value",
+                "Type": "string"
+              },
+              {
+                "Name": "Delivery Taxable Value",
+                "Type": "string"
+              },
+              {
+                "Name": "GST Payable on Product",
+                "Type": "string"
+              },
+              {
+                "Name": "GST Payable on Delivery",
+                "Type": "string"
+              },
+              {
+                "Name": "Total Meesho commission (Incl. GST)",
+                "Type": "string"
+              },
+              {
+                "Name": "GST on Total Meesho Commission",
+                "Type": "string"
+              },
+              {
+                "Name": "Delivery Charge(excl Gst)",
+                "Type": "string"
+              },
+              {
+                "Name": "GST on delivery charges",
+                "Type": "string"
+              },
+              {
+                "Name": "Supplier State",
+                "Type": "string"
+              },
+              {
+                "Name": "TCS (IGST)",
+                "Type": "string"
+              },
+              {
+                "Name": "TCS (0.5% CGST+0.5% SGST)",
+                "Type": "string"
+              },
+              {
+                "Name": "Settlement Amount to Supplier",
+                "Type": "string"
+              },
+              {
+                "Name": "Invoice Download Link",
+                "Type": "string"
+              },
+              {
+                "Name": "CN Download Link",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=folkulture/dip-type=US/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "MeeshoHubberholmeSalesTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "meesho-hubberholme-sales",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Meesho-Hubberholme-Sales",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "Type",
+                "Type": "string"
+              },
+              {
+                "Name": "Reason for Credit Entry",
+                "Type": "string"
+              },
+              {
+                "Name": "Sub Order No",
+                "Type": "string"
+              },
+              {
+                "Name": "Order Verification Date",
+                "Type": "string"
+              },
+              {
+                "Name": "Order Date",
+                "Type": "string"
+              },
+              {
+                "Name": "Cust Name",
+                "Type": "string"
+              },
+              {
+                "Name": "Cust address",
+                "Type": "string"
+              },
+              {
+                "Name": "Reseller State",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Name",
+                "Type": "string"
+              },
+              {
+                "Name": "SKU",
+                "Type": "string"
+              },
+              {
+                "Name": "Size",
+                "Type": "string"
+              },
+              {
+                "Name": "Quantity",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Unit Price (Incl. GST + Commission)",
+                "Type": "string"
+              },
+              {
+                "Name": "Total Sales Amount (Incl. GST + Commission)",
+                "Type": "string"
+              },
+              {
+                "Name": "Net Sales Amount(Incl GST + Commision)",
+                "Type": "string"
+              },
+              {
+                "Name": "Delivery Revenue (Incl. of GST)",
+                "Type": "string"
+              },
+              {
+                "Name": "GST% on Product Price and Delivery",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Taxable Value",
+                "Type": "string"
+              },
+              {
+                "Name": "Delivery Taxable Value",
+                "Type": "string"
+              },
+              {
+                "Name": "GST Payable on Product",
+                "Type": "string"
+              },
+              {
+                "Name": "GST Payable on Delivery",
+                "Type": "string"
+              },
+              {
+                "Name": "Total Meesho commission (Incl. GST)",
+                "Type": "string"
+              },
+              {
+                "Name": "GST on Total Meesho Commission",
+                "Type": "string"
+              },
+              {
+                "Name": "Delivery Charge(excl Gst)",
+                "Type": "string"
+              },
+              {
+                "Name": "GST on delivery charges",
+                "Type": "string"
+              },
+              {
+                "Name": "Supplier State",
+                "Type": "string"
+              },
+              {
+                "Name": "TCS (IGST)",
+                "Type": "string"
+              },
+              {
+                "Name": "TCS (0.5% CGST+0.5% SGST)",
+                "Type": "string"
+              },
+              {
+                "Name": "Settlement Amount to Supplier",
+                "Type": "string"
+              },
+              {
+                "Name": "Invoice Download Link",
+                "Type": "string"
+              },
+              {
+                "Name": "CN Download Link",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=meesho/dip-brand=hubberholme/dip-type=sales/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "AjioJitAnubhuteeB2CTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "ajiojit-anubhutee-b2c",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for AjioJit-Anubhutee-B2C",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "order_number",
+                "Type": "string"
+              },
+              {
+                "Name": "order_date",
+                "Type": "string"
+              },
+              {
+                "Name": "order_status",
+                "Type": "string"
+              },
+              {
+                "Name": "purchase_order_number",
+                "Type": "bigint"
+              },
+              {
+                "Name": "purchase_order_date",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_number",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_date",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_value",
+                "Type": "double"
+              },
+              {
+                "Name": "item_code",
+                "Type": "bigint"
+              },
+              {
+                "Name": "ean",
+                "Type": "string"
+              },
+              {
+                "Name": "product_Name",
+                "Type": "string"
+              },
+              {
+                "Name": "description",
+                "Type": "string"
+              },
+              {
+                "Name": "order_quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancelled_quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "shipped_quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "dispatched_on",
+                "Type": "string"
+              },
+              {
+                "Name": "fulfillment_Type",
+                "Type": "string"
+              },
+              {
+                "Name": "dispatch_sla_status",
+                "Type": "string"
+              },
+              {
+                "Name": "discounted_seller_price",
+                "Type": "double"
+              },
+              {
+                "Name": "seller_total_discount",
+                "Type": "double"
+              },
+              {
+                "Name": "base_price",
+                "Type": "double"
+              },
+              {
+                "Name": "cgst_percent",
+                "Type": "double"
+              },
+              {
+                "Name": "cgst_amount",
+                "Type": "double"
+              },
+              {
+                "Name": "sgst_percent",
+                "Type": "double"
+              },
+              {
+                "Name": "sgst_amount",
+                "Type": "double"
+              },
+              {
+                "Name": "igst_percent",
+                "Type": "double"
+              },
+              {
+                "Name": "igst_amount",
+                "Type": "double"
+              },
+              {
+                "Name": "mrp",
+                "Type": "double"
+              },
+              {
+                "Name": "listing_mrp",
+                "Type": "double"
+              },
+              {
+                "Name": "total_base_price",
+                "Type": "double"
+              },
+              {
+                "Name": "total_value",
+                "Type": "double"
+              },
+              {
+                "Name": "seller_id",
+                "Type": "string"
+              },
+              {
+                "Name": "pob_id",
+                "Type": "string"
+              },
+              {
+                "Name": "seller_Name",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=ajio_jit/dip-brand=anubhutee/dip-type=b2c/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "MyntraDennisLingoSalesTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "myntra-dennislingo-sales",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Myntra-DenniLingo-Sales",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "seller id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "warehouse id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "store order id",
+                "Type": "string"
+              },
+              {
+                "Name": "order release id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "order line id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "seller order id",
+                "Type": "string"
+              },
+              {
+                "Name": "order id fk",
+                "Type": "bigint"
+              },
+              {
+                "Name": "created on",
+                "Type": "string"
+              },
+              {
+                "Name": "style id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "seller sku code",
+                "Type": "string"
+              },
+              {
+                "Name": "sku id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "myntra sku code",
+                "Type": "string"
+              },
+              {
+                "Name": "size",
+                "Type": "string"
+              },
+              {
+                "Name": "vendor article number",
+                "Type": "string"
+              },
+              {
+                "Name": "brand",
+                "Type": "string"
+              },
+              {
+                "Name": "style Name",
+                "Type": "string"
+              },
+              {
+                "Name": "article Type",
+                "Type": "string"
+              },
+              {
+                "Name": "article Type id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "order status",
+                "Type": "string"
+              },
+              {
+                "Name": "packet id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "seller packe id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "courier code",
+                "Type": "string"
+              },
+              {
+                "Name": "order tracking number",
+                "Type": "string"
+              },
+              {
+                "Name": "seller warehouse id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancellation reason id fk",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancellation reason",
+                "Type": "string"
+              },
+              {
+                "Name": "packed on",
+                "Type": "string"
+              },
+              {
+                "Name": "fmpu date",
+                "Type": "string"
+              },
+              {
+                "Name": "inscanned on",
+                "Type": "string"
+              },
+              {
+                "Name": "shipped on",
+                "Type": "string"
+              },
+              {
+                "Name": "delivered on",
+                "Type": "string"
+              },
+              {
+                "Name": "cancelled on",
+                "Type": "string"
+              },
+              {
+                "Name": "rto creation date",
+                "Type": "string"
+              },
+              {
+                "Name": "lost date",
+                "Type": "string"
+              },
+              {
+                "Name": "return creation date",
+                "Type": "string"
+              },
+              {
+                "Name": "final amount",
+                "Type": "double"
+              },
+              {
+                "Name": "total mrp",
+                "Type": "double"
+              },
+              {
+                "Name": "discount",
+                "Type": "double"
+              },
+              {
+                "Name": "coupon discount",
+                "Type": "double"
+              },
+              {
+                "Name": "shipping charge",
+                "Type": "double"
+              },
+              {
+                "Name": "gift charge",
+                "Type": "double"
+              },
+              {
+                "Name": "tax recovery",
+                "Type": "double"
+              },
+              {
+                "Name": "city",
+                "Type": "string"
+              },
+              {
+                "Name": "state",
+                "Type": "string"
+              },
+              {
+                "Name": "zipcode",
+                "Type": "bigint"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=myntra/dip-brand=dennis_lingo/dip-type=sales/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "AjioJitDennislingoB2CTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "ajiojit-dennislingo-b2c",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for AjioJit-Dennislingo-B2C",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "order_number",
+                "Type": "string"
+              },
+              {
+                "Name": "order_date",
+                "Type": "string"
+              },
+              {
+                "Name": "order_status",
+                "Type": "string"
+              },
+              {
+                "Name": "purchase_order_number",
+                "Type": "bigint"
+              },
+              {
+                "Name": "purchase_order_date",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_number",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_date",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_value",
+                "Type": "double"
+              },
+              {
+                "Name": "item_code",
+                "Type": "bigint"
+              },
+              {
+                "Name": "ean",
+                "Type": "string"
+              },
+              {
+                "Name": "product_Name",
+                "Type": "string"
+              },
+              {
+                "Name": "description",
+                "Type": "string"
+              },
+              {
+                "Name": "order_quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancelled_quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "shipped_quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "dispatched_on",
+                "Type": "string"
+              },
+              {
+                "Name": "fulfillment_Type",
+                "Type": "string"
+              },
+              {
+                "Name": "dispatch_sla_status",
+                "Type": "string"
+              },
+              {
+                "Name": "discounted_seller_price",
+                "Type": "double"
+              },
+              {
+                "Name": "seller_total_discount",
+                "Type": "double"
+              },
+              {
+                "Name": "base_price",
+                "Type": "double"
+              },
+              {
+                "Name": "cgst_percent",
+                "Type": "double"
+              },
+              {
+                "Name": "cgst_amount",
+                "Type": "double"
+              },
+              {
+                "Name": "sgst_percent",
+                "Type": "double"
+              },
+              {
+                "Name": "sgst_amount",
+                "Type": "double"
+              },
+              {
+                "Name": "igst_percent",
+                "Type": "double"
+              },
+              {
+                "Name": "igst_amount",
+                "Type": "double"
+              },
+              {
+                "Name": "mrp",
+                "Type": "double"
+              },
+              {
+                "Name": "listing_mrp",
+                "Type": "double"
+              },
+              {
+                "Name": "total_base_price",
+                "Type": "double"
+              },
+              {
+                "Name": "total_value",
+                "Type": "double"
+              },
+              {
+                "Name": "seller_id",
+                "Type": "string"
+              },
+              {
+                "Name": "pob_id",
+                "Type": "string"
+              },
+              {
+                "Name": "seller_Name",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=ajio_jit/dip-brand=dennis_lingo/dip-type=b2c/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "ShopifyKaragiriDomesticTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "shopify-karagiri-domestic",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Shopify-karagiri-DomesticTable",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "order id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "sale id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "date",
+                "Type": "string"
+              },
+              {
+                "Name": "order",
+                "Type": "string"
+              },
+              {
+                "Name": "transaction Type",
+                "Type": "string"
+              },
+              {
+                "Name": "sale Type",
+                "Type": "string"
+              },
+              {
+                "Name": "sales channel",
+                "Type": "string"
+              },
+              {
+                "Name": "pos Location",
+                "Type": "string"
+              },
+              {
+                "Name": "billing country",
+                "Type": "string"
+              },
+              {
+                "Name": "billing region",
+                "Type": "string"
+              },
+              {
+                "Name": "billing city",
+                "Type": "string"
+              },
+              {
+                "Name": "shipping country",
+                "Type": "string"
+              },
+              {
+                "Name": "shipping region",
+                "Type": "string"
+              },
+              {
+                "Name": "shipping city",
+                "Type": "string"
+              },
+              {
+                "Name": "product Type",
+                "Type": "string"
+              },
+              {
+                "Name": "product vendor",
+                "Type": "string"
+              },
+              {
+                "Name": "product",
+                "Type": "string"
+              },
+              {
+                "Name": "variant",
+                "Type": "string"
+              },
+              {
+                "Name": "variant sku",
+                "Type": "string"
+              },
+              {
+                "Name": "net quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "gross sales",
+                "Type": "double"
+              },
+              {
+                "Name": "discounts",
+                "Type": "double"
+              },
+              {
+                "Name": "returns",
+                "Type": "double"
+              },
+              {
+                "Name": "net sales",
+                "Type": "double"
+              },
+              {
+                "Name": "shipping",
+                "Type": "double"
+              },
+              {
+                "Name": "taxes",
+                "Type": "double"
+              },
+              {
+                "Name": "total sales",
+                "Type": "double"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=shopify/dip-brand=karagiri/dip-type=domestic/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "AmazonFolkultureCanadaTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+            "Name": "amazon-folkulture-canada",
+            "Retention": 0,
+            "Description": "Glue Table which hold schema for Amazon-folkulture-Canada",
+            "TableType": "EXTERNAL_TABLE",
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StorageDescriptor": {
+              "Columns": [
+                {
+                  "Name": "(parent) asin",
+                  "Type": "string"
+                },
+                {
+                  "Name": "(child) asin",
+                  "Type": "string"
+                },
+                {
+                  "Name": "title",
+                  "Type": "string"
+                },
+                {
+                  "Name": "sku",
+                  "Type": "string"
+                },
+                {
+                  "Name": "sessions",
+                  "Type": "bigint"
+                },
+                {
+                  "Name": "session percentage",
+                  "Type": "string"
+                },
+                {
+                  "Name": "page views",
+                  "Type": "bigint"
+                },
+                {
+                  "Name": "page views percentage",
+                  "Type": "string"
+                },
+                {
+                  "Name": "featured offer (buy box) percentage",
+                  "Type": "string"
+                },
+                {
+                  "Name": "units ordered",
+                  "Type": "bigint"
+                },
+                {
+                  "Name": "units ordered – b2b",
+                  "Type": "bigint"
+                },
+                {
+                  "Name": "unit session percentage",
+                  "Type": "string"
+                },
+                {
+                  "Name": "units session percentage – b2b",
+                  "Type": "string"
+                },
+                {
+                  "Name": "ordered product sales",
+                  "Type": "string"
+                },
+                {
+                  "Name": "ordered product sales – b2b",
+                  "Type": "string"
+                },
+                {
+                  "Name": "total order items",
+                  "Type": "bigint"
+                },
+                {
+                  "Name": "total order items – b2b",
+                  "Type": "bigint"
+                },
+                {
+                  "Name": "date",
+                  "Type": "string"
+                }
+              ],
+              "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=folkulture/dip-type=canada/",
+              "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+              "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+              "Compressed": false,
+              "NumberOfBuckets": -1,
+              "SerdeInfo": {
+                "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+                "Parameters": {
+                  "field.delim": ","
+                }
+              },
+              "BucketColumns": [],
+              "SortColumns": [],
+              "Parameters": {
+                "CrawlerSchemaSerializerVersion": "1.0",
+                "CrawlerSchemaDeserializerVersion": "1.0",
+                "CompressionType": "none",
+                "Classification": "json",
+                "TypeOfData": "file",
+                "skip.header.line.count": 1
+              },
+              "StoredAsSubDirectories": false
+            }
+        },
+          "DatabaseName": "semi-automated",
+          "CatalogId": "092621740321"
+        }
+    },
+    "AmazonDenisLingoSkuTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "amazon-denislingo-sku",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Amazon-DennisLingo-Sku",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "(parent) asin",
+                "Type": "string"
+              },
+              {
+                "Name": "(child) asin",
+                "Type": "string"
+              },
+              {
+                "Name": "title",
+                "Type": "string"
+              },
+              {
+                "Name": "sku",
+                "Type": "string"
+              },
+              {
+                "Name": "sessions",
+                "Type": "bigint"
+              },
+              {
+                "Name": "session percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "page views",
+                "Type": "bigint"
+              },
+              {
+                "Name": "page views percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "featured offer (buy box) percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "units ordered",
+                "Type": "bigint"
+              },
+              {
+                "Name": "unit session percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "ordered product sales",
+                "Type": "string"
+              },
+              {
+                "Name": "total order items",
+                "Type": "bigint"
+              },
+              {
+                "Name": "date",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=dennis_lingo/dip-type=sku/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "ShopifyKaragiriInternationalTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "shopify-karagiri-international",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Shopify-Karagiri-International",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "order id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "sale id",
+                "Type": "bigint"
+              },
+              {
+                "Name": "date",
+                "Type": "string"
+              },
+              {
+                "Name": "order",
+                "Type": "string"
+              },
+              {
+                "Name": "transaction Type",
+                "Type": "string"
+              },
+              {
+                "Name": "sale Type",
+                "Type": "string"
+              },
+              {
+                "Name": "sales channel",
+                "Type": "string"
+              },
+              {
+                "Name": "pos Location",
+                "Type": "string"
+              },
+              {
+                "Name": "billing country",
+                "Type": "string"
+              },
+              {
+                "Name": "billing region",
+                "Type": "string"
+              },
+              {
+                "Name": "billing city",
+                "Type": "string"
+              },
+              {
+                "Name": "shipping country",
+                "Type": "string"
+              },
+              {
+                "Name": "shipping region",
+                "Type": "string"
+              },
+              {
+                "Name": "shipping city",
+                "Type": "string"
+              },
+              {
+                "Name": "product Type",
+                "Type": "string"
+              },
+              {
+                "Name": "product vendor",
+                "Type": "string"
+              },
+              {
+                "Name": "product",
+                "Type": "string"
+              },
+              {
+                "Name": "variant",
+                "Type": "string"
+              },
+              {
+                "Name": "variant sku",
+                "Type": "string"
+              },
+              {
+                "Name": "net quantity",
+                "Type": "bigint"
+              },
+              {
+                "Name": "gross sales",
+                "Type": "double"
+              },
+              {
+                "Name": "discounts",
+                "Type": "double"
+              },
+              {
+                "Name": "returns",
+                "Type": "double"
+              },
+              {
+                "Name": "net sales",
+                "Type": "double"
+              },
+              {
+                "Name": "shipping",
+                "Type": "double"
+              },
+              {
+                "Name": "taxes",
+                "Type": "double"
+              },
+              {
+                "Name": "total sales",
+                "Type": "double"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=shopify/dip-brand=karagiri/dip-type=international/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "MeeshoIshinMumbaiTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "meesho-ishin-mumbai",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Meesho-Ishin-Mumbai",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "Type",
+                "Type": "string"
+              },
+              {
+                "Name": "Reason for Credit Entry",
+                "Type": "string"
+              },
+              {
+                "Name": "Sub Order No",
+                "Type": "string"
+              },
+              {
+                "Name": "Order Verification Date",
+                "Type": "string"
+              },
+              {
+                "Name": "Order Date",
+                "Type": "string"
+              },
+              {
+                "Name": "Cust Name",
+                "Type": "string"
+              },
+              {
+                "Name": "Cust address",
+                "Type": "string"
+              },
+              {
+                "Name": "Reseller State",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Name",
+                "Type": "string"
+              },
+              {
+                "Name": "SKU",
+                "Type": "string"
+              },
+              {
+                "Name": "Size",
+                "Type": "string"
+              },
+              {
+                "Name": "Quantity",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Unit Price (Incl. GST + Commission)",
+                "Type": "string"
+              },
+              {
+                "Name": "Total Sales Amount (Incl. GST + Commission)",
+                "Type": "string"
+              },
+              {
+                "Name": "Net Sales Amount(Incl GST + Commision)",
+                "Type": "string"
+              },
+              {
+                "Name": "Delivery Revenue (Incl. of GST)",
+                "Type": "string"
+              },
+              {
+                "Name": "GST% on Product Price and Delivery",
+                "Type": "string"
+              },
+              {
+                "Name": "Product Taxable Value",
+                "Type": "string"
+              },
+              {
+                "Name": "Delivery Taxable Value",
+                "Type": "string"
+              },
+              {
+                "Name": "GST Payable on Product",
+                "Type": "string"
+              },
+              {
+                "Name": "GST Payable on Delivery",
+                "Type": "string"
+              },
+              {
+                "Name": "Total Meesho commission (Incl. GST)",
+                "Type": "string"
+              },
+              {
+                "Name": "GST on Total Meesho Commission",
+                "Type": "string"
+              },
+              {
+                "Name": "Delivery Charge(excl Gst)",
+                "Type": "string"
+              },
+              {
+                "Name": "GST on delivery charges",
+                "Type": "string"
+              },
+              {
+                "Name": "Supplier State",
+                "Type": "string"
+              },
+              {
+                "Name": "TCS (IGST)",
+                "Type": "string"
+              },
+              {
+                "Name": "TCS (0.5% CGST+0.5% SGST)",
+                "Type": "string"
+              },
+              {
+                "Name": "Settlement Amount to Supplier",
+                "Type": "string"
+              },
+              {
+                "Name": "Invoice Download Link",
+                "Type": "string"
+              },
+              {
+                "Name": "CN Download Link",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=folkulture/dip-type=US/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "AmazonFolkultureMexicoTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "amazon-folkulture-mexico",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Amazon-folkulture-mexico",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "(parent) asin",
+                "Type": "string"
+              },
+              {
+                "Name": "(child) asin",
+                "Type": "string"
+              },
+              {
+                "Name": "title",
+                "Type": "string"
+              },
+              {
+                "Name": "sku",
+                "Type": "string"
+              },
+              {
+                "Name": "sessions",
+                "Type": "bigint"
+              },
+              {
+                "Name": "session percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "page views",
+                "Type": "bigint"
+              },
+              {
+                "Name": "page views percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "featured offer (buy box) percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "units ordered",
+                "Type": "bigint"
+              },
+              {
+                "Name": "unit session percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "ordered product sales",
+                "Type": "string"
+              },
+              {
+                "Name": "total order items",
+                "Type": "bigint"
+              },
+              {
+                "Name": "date",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=folkulture/dip-type=Mexico/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    }
+  },
+  "Conditions": {
+    "IsProd": {
+      "Fn::Equals": [
+        {
+          "Ref": "Env"
+        },
+        "prod"
+      ]
+    },
+    "IsStage": {
+      "Fn::Equals": [
+        {
+          "Ref": "Env"
+        },
+        "stage"
+      ]
+    },
+    "IsDev": {
+      "Fn::Equals": [
+        {
+          "Ref": "Env"
+        },
+        "dev"
+      ]
+    },
+    "IsProdOrStage": {
+      "Fn::Or": [
+        {
+          "Condition": "IsProd"
+        },
+        {
+          "Condition": "IsStage"
+        }
+      ]
+    }
+  }
+}
