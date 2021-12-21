@@ -299,7 +299,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "flipkart-villain-sales",
+          "Name": "flipkart-villain-sales--flipkart_villain_non_integrated--b2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for FlipkartVillainSalesTable",
           "TableType": "EXTERNAL_TABLE",
@@ -314,11 +314,11 @@
           "StorageDescriptor": {
             "Columns": [
               {
-                "Name": "product id",
+                "Name": "product_id",
                 "Type": "string"
               },
               {
-                "Name": "sku id",
+                "Name": "sku_id",
                 "Type": "string"
               },
               {
@@ -334,19 +334,19 @@
                 "Type": "string"
               },
               {
-                "Name": "order date",
+                "Name": "order_date",
                 "Type": "string"
               },
               {
-                "Name": "fulfillment Type",
+                "Name": "fulfillment_type",
                 "Type": "string"
               },
               {
-                "Name": "Location id",
+                "Name": "location_id",
                 "Type": "string"
               },
               {
-                "Name": "gross units",
+                "Name": "gross_units",
                 "Type": "bigint"
               },
               {
@@ -354,27 +354,27 @@
                 "Type": "bigint"
               },
               {
-                "Name": "cancellation units",
+                "Name": "cancellation_units",
                 "Type": "bigint"
               },
               {
-                "Name": "cancellation amount",
+                "Name": "cancellation_amount",
                 "Type": "bigint"
               },
               {
-                "Name": "return units",
+                "Name": "return_units",
                 "Type": "bigint"
               },
               {
-                "Name": "return amount",
+                "Name": "return_amount",
                 "Type": "bigint"
               },
               {
-                "Name": "final sale units",
+                "Name": "final_sale_units",
                 "Type": "bigint"
               },
               {
-                "Name": "final sale amount",
+                "Name": "final _sale_amount",
                 "Type": "bigint"
               }
             ],
@@ -406,11 +406,804 @@
         "CatalogId": "092621740321"
       }
     },
+    "FlipkartVillainListingTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "flipkart-villain-listing",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for FlipkartVillainListingTable",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 2
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "product_id",
+                "Type": "string"
+              },
+              {
+                "Name": "product_title",
+                "Type": "string"
+              },
+              {
+                "Name": "seller_sku_id",
+                "Type": "string"
+              },
+              {
+                "Name": "processing_errors_if_any",
+                "Type": "string"
+              },
+              {
+                "Name": "sub_category",
+                "Type": "string"
+              },
+              {
+                "Name": "flipkart_serial_number",
+                "Type": "string"
+              },
+              {
+                "Name": "listing_id",
+                "Type": "string"
+              },
+              {
+                "Name": "listing_status",
+                "Type": "string"
+              },
+              {
+                "Name": "inactive_reason",
+                "Type": "bigint"
+              },
+              {
+                "Name": "mrp",
+                "Type": "bigint"
+              },
+              {
+                "Name": "your_selling_price",
+                "Type": "bigint"
+              },
+              {
+                "Name": "usual_price",
+                "Type": "bigint"
+              },
+              {
+                "Name": "fulfillment_by",
+                "Type": "string"
+              },
+              {
+                "Name": "system_stock_count",
+                "Type": "bigint"
+              },
+              {
+                "Name": "your_stock_count",
+                "Type": "bigint"
+              },
+              {
+                "Name": "procurement_sla",
+                "Type": "string"
+              },
+               {
+                "Name": "procurement_type",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=flipkart/dip-brand=villain/dip-type=listing/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "FlipkartIshinSalesTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "flipkart-ishin-sales--flipkart_ishin_non_integrated--b2c",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Flipkart-ishin-Sales",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+             "Columns": [
+              {
+                "Name": "product_id",
+                "Type": "string"
+              },
+              {
+                "Name": "sku_id",
+                "Type": "string"
+              },
+              {
+                "Name": "category",
+                "Type": "string"
+              },
+              {
+                "Name": "brand",
+                "Type": "string"
+              },
+              {
+                "Name": "vertical",
+                "Type": "string"
+              },
+              {
+                "Name": "order_date",
+                "Type": "string"
+              },
+              {
+                "Name": "fulfillment_type",
+                "Type": "string"
+              },
+              {
+                "Name": "location_id",
+                "Type": "string"
+              },
+              {
+                "Name": "gross_units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "gmv",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancellation_units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancellation_amount",
+                "Type": "bigint"
+              },
+              {
+                "Name": "return_units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "return_amount",
+                "Type": "bigint"
+              },
+              {
+                "Name": "final_sale_units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "final _sale_amount",
+                "Type": "bigint"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=flipkart/dip-brand=ishin/dip-type=sales/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "FlipkartIshinListingTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "flipkart-ishin-listing",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for FlipkartIshinListingTable",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 2
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "product_id",
+                "Type": "string"
+              },
+              {
+                "Name": "product_title",
+                "Type": "string"
+              },
+              {
+                "Name": "seller_sku_id",
+                "Type": "string"
+              },
+              {
+                "Name": "processing_errors_if_any",
+                "Type": "string"
+              },
+              {
+                "Name": "sub_category",
+                "Type": "string"
+              },
+              {
+                "Name": "flipkart_serial_number",
+                "Type": "string"
+              },
+              {
+                "Name": "listing_id",
+                "Type": "string"
+              },
+              {
+                "Name": "listing_status",
+                "Type": "string"
+              },
+              {
+                "Name": "inactive_reason",
+                "Type": "bigint"
+              },
+              {
+                "Name": "mrp",
+                "Type": "bigint"
+              },
+              {
+                "Name": "your_selling_price",
+                "Type": "bigint"
+              },
+              {
+                "Name": "usual_price",
+                "Type": "bigint"
+              },
+              {
+                "Name": "fulfillment_by",
+                "Type": "string"
+              },
+              {
+                "Name": "system_stock_count",
+                "Type": "bigint"
+              },
+              {
+                "Name": "your_stock_count",
+                "Type": "bigint"
+              },
+              {
+                "Name": "procurement_sla",
+                "Type": "string"
+              },
+               {
+                "Name": "procurement_type",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=flipkart/dip-brand=ishin/dip-type=listing/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 2
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "FlipkartAnubhuteeSalesTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "flipkart-anubhutee-sales",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Flipkart-anubhutee-Sales_d_flipkart_anubhutee_non_integrated_d_b2c",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+           "Columns": [
+              {
+                "Name": "product_id",
+                "Type": "string"
+              },
+              {
+                "Name": "sku_id",
+                "Type": "string"
+              },
+              {
+                "Name": "category",
+                "Type": "string"
+              },
+              {
+                "Name": "brand",
+                "Type": "string"
+              },
+              {
+                "Name": "vertical",
+                "Type": "string"
+              },
+              {
+                "Name": "order_date",
+                "Type": "string"
+              },
+              {
+                "Name": "fulfillment_type",
+                "Type": "string"
+              },
+              {
+                "Name": "location_id",
+                "Type": "string"
+              },
+              {
+                "Name": "gross_units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "gmv",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancellation_units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancellation_amount",
+                "Type": "bigint"
+              },
+              {
+                "Name": "return_units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "return_amount",
+                "Type": "bigint"
+              },
+              {
+                "Name": "final_sale_units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "final _sale_amount",
+                "Type": "bigint"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=flipkart/dip-brand=anubhutee/dip-type=sales/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "FlipkartAnubhuteeListingTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "flipkart-anubhutee-listing",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for FlipkartanubhuteeListingTable",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 2
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "product_id",
+                "Type": "string"
+              },
+              {
+                "Name": "product_title",
+                "Type": "string"
+              },
+              {
+                "Name": "seller_sku_id",
+                "Type": "string"
+              },
+              {
+                "Name": "processing_errors_if_any",
+                "Type": "string"
+              },
+              {
+                "Name": "sub_category",
+                "Type": "string"
+              },
+              {
+                "Name": "flipkart_serial_number",
+                "Type": "string"
+              },
+              {
+                "Name": "listing_id",
+                "Type": "string"
+              },
+              {
+                "Name": "listing_status",
+                "Type": "string"
+              },
+              {
+                "Name": "inactive_reason",
+                "Type": "bigint"
+              },
+              {
+                "Name": "mrp",
+                "Type": "bigint"
+              },
+              {
+                "Name": "your_selling_price",
+                "Type": "bigint"
+              },
+              {
+                "Name": "usual_price",
+                "Type": "bigint"
+              },
+              {
+                "Name": "fulfillment_by",
+                "Type": "string"
+              },
+              {
+                "Name": "system_stock_count",
+                "Type": "bigint"
+              },
+              {
+                "Name": "your_stock_count",
+                "Type": "bigint"
+              },
+              {
+                "Name": "procurement_sla",
+                "Type": "string"
+              },
+               {
+                "Name": "procurement_type",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=flipkart/dip-brand=anubhutee/dip-type=listing/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 2
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "FlipkartDLSalesTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "flipkart-dennis_lingo-sales_d_flipkart_dl_non_integrated_d_b2c",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Flipkart-dennis_lingo-Sales",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "product_id",
+                "Type": "string"
+              },
+              {
+                "Name": "sku_id",
+                "Type": "string"
+              },
+              {
+                "Name": "category",
+                "Type": "string"
+              },
+              {
+                "Name": "brand",
+                "Type": "string"
+              },
+              {
+                "Name": "vertical",
+                "Type": "string"
+              },
+              {
+                "Name": "order_date",
+                "Type": "string"
+              },
+              {
+                "Name": "fulfillment_type",
+                "Type": "string"
+              },
+              {
+                "Name": "location_id",
+                "Type": "string"
+              },
+              {
+                "Name": "gross_units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "gmv",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancellation_units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "cancellation_amount",
+                "Type": "bigint"
+              },
+              {
+                "Name": "return_units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "return_amount",
+                "Type": "bigint"
+              },
+              {
+                "Name": "final_sale_units",
+                "Type": "bigint"
+              },
+              {
+                "Name": "final _sale_amount",
+                "Type": "bigint"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=flipkart/dip-brand=dennis_lingo/dip-type=sales/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "FlipkartDListingTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "flipkart-dennis_lingo-listing",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Flipkartdennis_lingoListingTable",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 2
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "product_id",
+                "Type": "string"
+              },
+              {
+                "Name": "product_title",
+                "Type": "string"
+              },
+              {
+                "Name": "seller_sku_id",
+                "Type": "string"
+              },
+              {
+                "Name": "processing_errors_if_any",
+                "Type": "string"
+              },
+              {
+                "Name": "sub_category",
+                "Type": "string"
+              },
+              {
+                "Name": "flipkart_serial_number",
+                "Type": "string"
+              },
+              {
+                "Name": "listing_id",
+                "Type": "string"
+              },
+              {
+                "Name": "listing_status",
+                "Type": "string"
+              },
+              {
+                "Name": "inactive_reason",
+                "Type": "bigint"
+              },
+              {
+                "Name": "mrp",
+                "Type": "bigint"
+              },
+              {
+                "Name": "your_selling_price",
+                "Type": "bigint"
+              },
+              {
+                "Name": "usual_price",
+                "Type": "bigint"
+              },
+              {
+                "Name": "fulfillment_by",
+                "Type": "string"
+              },
+              {
+                "Name": "system_stock_count",
+                "Type": "bigint"
+              },
+              {
+                "Name": "your_stock_count",
+                "Type": "bigint"
+              },
+              {
+                "Name": "procurement_sla",
+                "Type": "string"
+              },
+               {
+                "Name": "procurement_type",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=flipkart/dip-brand=dennis_lingo/dip-type=listing/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 2
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
     "CloudTailHeleaSalesTable": {
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "cloudtail-helea-sales",
+          "Name": "cloudtail-helea-sales_d_cloudtail_helea_non_integrated_d_b2b",
           "Retention": 0,
           "Description": "Glue Table which hold schema for CloudTailHeleaSalesTable",
           "TableType": "EXTERNAL_TABLE",
@@ -425,63 +1218,63 @@
           "StorageDescriptor": {
             "Columns": [
               {
-                "Name": "ASIN",
+                "Name": "asin",
                 "Type": "string"
               },
               {
-                "Name": "Product Title",
+                "Name": "product_title",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Revenue",
+                "Name": "shipped_revenue",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Revenue - % of Total",
+                "Name": "shipped_revenue_% of_total",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Revenue - Prior Period",
+                "Name": "shipped_revenue_- prior_period",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Revenue - Last Year",
+                "Name": "shipped_revenue_- last_year",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Units",
+                "Name": "shipped_units",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Units - % of Total",
+                "Name": "shipped_units_%_of_total",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Units - Prior Period",
+                "Name": "shipped_units_prior_period",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Units - Last Year",
+                "Name": "shipped_units_last_year",
                 "Type": "string"
               },
               {
-                "Name": "Customer Returns",
+                "Name": "customer_returns",
                 "Type": "string"
               },
               {
-                "Name": "Free Replacements",
+                "Name": "free_replacements",
                 "Type": "string"
               },
               {
-                "Name": "Average Sales Price",
+                "Name": "average_sales_price",
                 "Type": "string"
               },
               {
-                "Name": "Average Sales Price - Prior Period",
+                "Name": "average_sales_price_prior_period",
                 "Type": "string"
               },
               {
-                "Name": "Date",
+                "Name": "date",
                 "Type": "string"
               }
             ],
@@ -517,7 +1310,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "cloudtail-dennislingo-sales",
+          "Name": "cloudtail-dennislingo-sales_d_cloudtail_dl_non_integrated_d_b2b",
           "Retention": 0,
           "Description": "Glue Table which hold schema for CloudTailDennisLingoSalesTable",
           "TableType": "EXTERNAL_TABLE",
@@ -532,63 +1325,63 @@
           "StorageDescriptor": {
             "Columns": [
               {
-                "Name": "ASIN",
+                "Name": "asin",
                 "Type": "string"
               },
               {
-                "Name": "Product Title",
+                "Name": "product_title",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Revenue",
+                "Name": "shipped_revenue",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Revenue - % of Total",
+                "Name": "shipped_revenue_% of_total",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Revenue - Prior Period",
+                "Name": "shipped_revenue_- prior_period",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Revenue - Last Year",
+                "Name": "shipped_revenue_- last_year",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Units",
+                "Name": "shipped_units",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Units - % of Total",
+                "Name": "shipped_units_%_of_total",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Units - Prior Period",
+                "Name": "shipped_units_prior_period",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Units - Last Year",
+                "Name": "shipped_units_last_year",
                 "Type": "string"
               },
               {
-                "Name": "Customer Returns",
+                "Name": "customer_returns",
                 "Type": "string"
               },
               {
-                "Name": "Free Replacements",
+                "Name": "free_replacements",
                 "Type": "string"
               },
               {
-                "Name": "Average Sales Price",
+                "Name": "average_sales_price",
                 "Type": "string"
               },
               {
-                "Name": "Average Sales Price - Prior Period",
+                "Name": "average_sales_price_prior_period",
                 "Type": "string"
               },
               {
-                "Name": "Date",
+                "Name": "date",
                 "Type": "string"
               }
             ],
@@ -624,7 +1417,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "cloudtail-ishin-sales",
+          "Name": "cloudtail-ishin-sales_d_cloudtail_ishin_non_integrated_d_b2b",
           "Retention": 0,
           "Description": "Glue Table which hold schema for CloudTailIshinalesTable",
           "TableType": "EXTERNAL_TABLE",
@@ -637,65 +1430,65 @@
             "skip.header.line.count": 2
           },
           "StorageDescriptor": {
-            "Columns": [
+             "Columns": [
               {
-                "Name": "ASIN",
+                "Name": "asin",
                 "Type": "string"
               },
               {
-                "Name": "Product Title",
+                "Name": "product_title",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Revenue",
+                "Name": "shipped_revenue",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Revenue - % of Total",
+                "Name": "shipped_revenue_% of_total",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Revenue - Prior Period",
+                "Name": "shipped_revenue_- prior_period",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Revenue - Last Year",
+                "Name": "shipped_revenue_- last_year",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Units",
+                "Name": "shipped_units",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Units - % of Total",
+                "Name": "shipped_units_%_of_total",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Units - Prior Period",
+                "Name": "shipped_units_prior_period",
                 "Type": "string"
               },
               {
-                "Name": "Shipped Units - Last Year",
+                "Name": "shipped_units_last_year",
                 "Type": "string"
               },
               {
-                "Name": "Customer Returns",
+                "Name": "customer_returns",
                 "Type": "string"
               },
               {
-                "Name": "Free Replacements",
+                "Name": "free_replacements",
                 "Type": "string"
               },
               {
-                "Name": "Average Sales Price",
+                "Name": "average_sales_price",
                 "Type": "string"
               },
               {
-                "Name": "Average Sales Price - Prior Period",
+                "Name": "average_sales_price_prior_period",
                 "Type": "string"
               },
               {
-                "Name": "Date",
+                "Name": "date",
                 "Type": "string"
               }
             ],
@@ -731,7 +1524,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "ajiojit-denislingo-b2b",
+          "Name": "ajiojit-denislingo-b2b_d_ajio_jit_dl_b2b_non_integrated_d_b2b",
           "Retention": 0,
           "Description": "Glue Table which hold schema for Ajio-Jit-DenisLingo-B2b",
           "TableType": "EXTERNAL_TABLE",
@@ -910,122 +1703,11 @@
         "CatalogId": "092621740321"
       }
     },
-    "FlipkartIshinSalesTable": {
-      "Type": "AWS::Glue::Table",
-      "Properties": {
-        "TableInput": {
-          "Name": "flipkart-ishin-sales",
-          "Retention": 0,
-          "Description": "Glue Table which hold schema for Flipkart-ishin-Sales",
-          "TableType": "EXTERNAL_TABLE",
-          "Parameters": {
-            "CrawlerSchemaSerializerVersion": "1.0",
-            "CrawlerSchemaDeserializerVersion": "1.0",
-            "CompressionType": "none",
-            "Classification": "json",
-            "TypeOfData": "file",
-            "skip.header.line.count": 1
-          },
-          "StorageDescriptor": {
-            "Columns": [
-              {
-                "Name": "product id",
-                "Type": "string"
-              },
-              {
-                "Name": "sku id",
-                "Type": "string"
-              },
-              {
-                "Name": "category",
-                "Type": "string"
-              },
-              {
-                "Name": "brand",
-                "Type": "string"
-              },
-              {
-                "Name": "vertical",
-                "Type": "string"
-              },
-              {
-                "Name": "order date",
-                "Type": "string"
-              },
-              {
-                "Name": "fulfillment Type",
-                "Type": "string"
-              },
-              {
-                "Name": "Location id",
-                "Type": "string"
-              },
-              {
-                "Name": "gross units",
-                "Type": "bigint"
-              },
-              {
-                "Name": "gmv",
-                "Type": "bigint"
-              },
-              {
-                "Name": "cancellation units",
-                "Type": "bigint"
-              },
-              {
-                "Name": "cancellation amount",
-                "Type": "bigint"
-              },
-              {
-                "Name": "return units",
-                "Type": "bigint"
-              },
-              {
-                "Name": "return amount",
-                "Type": "bigint"
-              },
-              {
-                "Name": "final sale units",
-                "Type": "bigint"
-              },
-              {
-                "Name": "final sale amount",
-                "Type": "bigint"
-              }
-            ],
-            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=flipkart/dip-brand=ishin/dip-type=sales/",
-            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
-            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
-            "Compressed": false,
-            "NumberOfBuckets": -1,
-            "SerdeInfo": {
-              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
-              "Parameters": {
-                "field.delim": ","
-              }
-            },
-            "BucketColumns": [],
-            "SortColumns": [],
-            "Parameters": {
-              "CrawlerSchemaSerializerVersion": "1.0",
-              "CrawlerSchemaDeserializerVersion": "1.0",
-              "CompressionType": "none",
-              "Classification": "json",
-              "TypeOfData": "file",
-              "skip.header.line.count": 1
-            },
-            "StoredAsSubDirectories": false
-          }
-        },
-        "DatabaseName": "semi-automated",
-        "CatalogId": "092621740321"
-      }
-    },
     "MeeshoAnubhuteeSalesTable": {
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "meesho-anubhutee-sales",
+          "Name": "meesho-anubhutee-sales_d_meesho_anubhutee_non_integrated_d_b2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for Meesho-Anubhutee-Sales",
           "TableType": "EXTERNAL_TABLE",
@@ -1035,7 +1717,7 @@
             "CompressionType": "none",
             "Classification": "json",
             "TypeOfData": "file",
-            "skip.header.line.count": 1
+            "skip.header.line.count": 3
           },
           "StorageDescriptor": {
             "Columns": [
@@ -1044,123 +1726,123 @@
                 "Type": "string"
               },
               {
-                "Name": "Reason for Credit Entry",
+                "Name": "reason_for_credit_entry",
                 "Type": "string"
               },
               {
-                "Name": "Sub Order No",
+                "Name": "sub_order_no",
                 "Type": "string"
               },
               {
-                "Name": "Order Verification Date",
+                "Name": "order_verification_date",
                 "Type": "string"
               },
               {
-                "Name": "Order Date",
+                "Name": "order_date",
                 "Type": "string"
               },
               {
-                "Name": "Cust Name",
+                "Name": "cust_name",
                 "Type": "string"
               },
               {
-                "Name": "Cust address",
+                "Name": "cust_address",
                 "Type": "string"
               },
               {
-                "Name": "Reseller State",
+                "Name": "reseller_state",
                 "Type": "string"
               },
               {
-                "Name": "Product Name",
+                "Name": "product_name",
                 "Type": "string"
               },
               {
-                "Name": "SKU",
+                "Name": "sku",
                 "Type": "string"
               },
               {
-                "Name": "Size",
+                "Name": "size",
                 "Type": "string"
               },
               {
-                "Name": "Quantity",
+                "Name": "quantity",
                 "Type": "string"
               },
               {
-                "Name": "Product Unit Price (Incl. GST + Commission)",
+                "Name": "product_unit_price",
                 "Type": "string"
               },
               {
-                "Name": "Total Sales Amount (Incl. GST + Commission)",
+                "Name": "total_sales_amount",
                 "Type": "string"
               },
               {
-                "Name": "Net Sales Amount(Incl GST + Commision)",
+                "Name": "net_sales_amount",
                 "Type": "string"
               },
               {
-                "Name": "Delivery Revenue (Incl. of GST)",
+                "Name": "delivery_revenue",
                 "Type": "string"
               },
               {
-                "Name": "GST% on Product Price and Delivery",
+                "Name": "gst%_on_product_price_and_delivery",
                 "Type": "string"
               },
               {
-                "Name": "Product Taxable Value",
+                "Name": "product_taxable_value",
                 "Type": "string"
               },
               {
-                "Name": "Delivery Taxable Value",
+                "Name": "delivery_taxable_value",
                 "Type": "string"
               },
               {
-                "Name": "GST Payable on Product",
+                "Name": "gst_payable_on_product",
                 "Type": "string"
               },
               {
-                "Name": "GST Payable on Delivery",
+                "Name": "gst_payable_on_delivey",
                 "Type": "string"
               },
               {
-                "Name": "Total Meesho commission (Incl. GST)",
+                "Name": "total_meesho_commission",
                 "Type": "string"
               },
               {
-                "Name": "GST on Total Meesho Commission",
+                "Name": "gst_on_total_meesho_commission",
                 "Type": "string"
               },
               {
-                "Name": "Delivery Charge(excl Gst)",
+                "Name": "delivery_charges",
                 "Type": "string"
               },
               {
-                "Name": "GST on delivery charges",
+                "Name": "gst_on_delivery_charges",
                 "Type": "string"
               },
               {
-                "Name": "Supplier State",
+                "Name": "supplier_state",
                 "Type": "string"
               },
               {
-                "Name": "TCS (IGST)",
+                "Name": "tcs",
                 "Type": "string"
               },
               {
-                "Name": "TCS (0.5% CGST+0.5% SGST)",
+                "Name": "tcs_(0.5% CGST+0.5% SGST)",
                 "Type": "string"
               },
               {
-                "Name": "Settlement Amount to Supplier",
+                "Name": "settlement_amount_to_supplier",
                 "Type": "string"
               },
               {
-                "Name": "Invoice Download Link",
+                "Name": "invoice_download_link",
                 "Type": "string"
               },
               {
-                "Name": "CN Download Link",
+                "Name": "cn_download_link",
                 "Type": "string"
               }
             ],
@@ -1196,7 +1878,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "ajiojit-anubhutee-b2b",
+          "Name": "ajiojit-anubhutee-b2b_d_ajio_jit_anubhutee_b2b_non_integrated_d_b2b",
           "Retention": 0,
           "Description": "Glue Table which hold schema for AjioJit-Anubhutee-B2b",
           "TableType": "EXTERNAL_TABLE",
@@ -1379,7 +2061,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "amazon-bulfyss-sku",
+          "Name": "amazon-bulfyss-sku_d_amazon_bulfyss_non_integrated_d_b2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for Amzon-Bulfyss-Sku",
           "TableType": "EXTERNAL_TABLE",
@@ -1394,11 +2076,11 @@
           "StorageDescriptor": {
             "Columns": [
               {
-                "Name": "(parent) asin",
+                "Name": "parent_asin",
                 "Type": "string"
               },
               {
-                "Name": "(child) asin",
+                "Name": "child_asin",
                 "Type": "string"
               },
               {
@@ -1414,35 +2096,35 @@
                 "Type": "string"
               },
               {
-                "Name": "session percentage",
+                "Name": "session_percentage",
                 "Type": "string"
               },
               {
-                "Name": "page views",
+                "Name": "page_views",
                 "Type": "string"
               },
               {
-                "Name": "page views percentage",
+                "Name": "page_views_percentage",
                 "Type": "string"
               },
               {
-                "Name": "featured offer (buy box) percentage",
+                "Name": "featured_offer_buy box_percentage",
                 "Type": "string"
               },
               {
-                "Name": "units ordered",
+                "Name": "units_ordered",
                 "Type": "bigint"
               },
               {
-                "Name": "unit session percentage",
+                "Name": "unit_session_percentage",
                 "Type": "string"
               },
               {
-                "Name": "ordered product sales",
+                "Name": "ordered_product_sales",
                 "Type": "string"
               },
               {
-                "Name": "total order items",
+                "Name": "total_order_items",
                 "Type": "bigint"
               },
               {
@@ -1482,7 +2164,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "ajiosor-hubberholme-sales",
+          "Name": "ajiosor-hubberholme-sales_d_ajio_sor_hubberholme_non_integrated_d_b2b",
           "Retention": 0,
           "Description": "Glue Table which hold schema for AjioSor-Hubberholme-Sales",
           "TableType": "EXTERNAL_TABLE",
@@ -1496,64 +2178,92 @@
           },
           "StorageDescriptor": {
             "Columns": [
-              {
-                "Name": "(parent) asin",
-                "Type": "string"
-              },
-              {
-                "Name": "(child) asin",
-                "Type": "string"
-              },
-              {
-                "Name": "title",
-                "Type": "string"
-              },
-              {
-                "Name": "sku",
-                "Type": "string"
-              },
-              {
-                "Name": "sessions",
-                "Type": "string"
-              },
-              {
-                "Name": "session percentage",
-                "Type": "string"
-              },
-              {
-                "Name": "page views",
-                "Type": "string"
-              },
-              {
-                "Name": "page views percentage",
-                "Type": "string"
-              },
-              {
-                "Name": "featured offer (buy box) percentage",
-                "Type": "string"
-              },
-              {
-                "Name": "units ordered",
-                "Type": "bigint"
-              },
-              {
-                "Name": "unit session percentage",
-                "Type": "string"
-              },
-              {
-                "Name": "ordered product sales",
-                "Type": "string"
-              },
-              {
-                "Name": "total order items",
-                "Type": "bigint"
-              },
-              {
-                "Name": "date",
-                "Type": "string"
-              }
-            ],
-            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=bulfyss/dip-type=sku/",
+                        {
+                           "Name":"vendor_code",
+                           "Type":"bigint"
+                        },
+                        {
+                           "Name":"vendor_name",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"brand",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"month_day_year_of_order_date",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"varianto",
+                           "Type":"bigint"
+                        },
+                        {
+                           "Name":"option",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"ean",
+                           "Type":"bigint"
+                        },
+                        {
+                           "Name":"mrp1",
+                           "Type":"bigint"
+                        },
+                        {
+                           "Name":"mapped_segment",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"category",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"vertical",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"class",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"brick",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"colour",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"size",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"mapped_season_code",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"booked_quantity",
+                           "Type":"bigint"
+                        },
+                        {
+                           "Name":"booked_mrp_revenue",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"booked_trade_discount",
+                           "Type":"bigint"
+                        },
+                        {
+                           "Name":"style_code",
+                           "Type":"string"
+                        },
+                        {
+                           "Name":"commercial_type",
+                           "Type":"string"
+                        }
+                     ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip_channel=ajio_sor/dip_brand=hubberholme/dip_type=sor/",
             "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
             "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
             "Compressed": false,
@@ -1585,7 +2295,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "amazon-folkulture-us",
+          "Name": "amazon-folkulture-us_d_amazon_folkulture_us_non_integrated_d_b2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for Amazon-folkulture-US",
           "TableType": "EXTERNAL_TABLE",
@@ -1600,11 +2310,11 @@
           "StorageDescriptor": {
             "Columns": [
               {
-                "Name": "(parent) asin",
+                "Name": "parent_asin",
                 "Type": "string"
               },
               {
-                "Name": "(child) asin",
+                "Name": "child_asin",
                 "Type": "string"
               },
               {
@@ -1620,51 +2330,35 @@
                 "Type": "string"
               },
               {
-                "Name": "session percentage",
+                "Name": "session_percentage",
                 "Type": "string"
               },
               {
-                "Name": "page views",
+                "Name": "page_views",
                 "Type": "string"
               },
               {
-                "Name": "page views percentage",
+                "Name": "page_views_percentage",
                 "Type": "string"
               },
               {
-                "Name": "featured offer (buy box) percentage",
+                "Name": "featured_offer_buy box_percentage",
                 "Type": "string"
               },
               {
-                "Name": "units ordered",
+                "Name": "units_ordered",
                 "Type": "bigint"
               },
               {
-                "Name": "units ordered - b2b",
-                "Type": "bigint"
-              },
-              {
-                "Name": "unit session percentage",
+                "Name": "unit_session_percentage",
                 "Type": "string"
               },
               {
-                "Name": "unit session percentage - b2b",
+                "Name": "ordered_product_sales",
                 "Type": "string"
               },
               {
-                "Name": "ordered product sales",
-                "Type": "string"
-              },
-              {
-                "Name": "ordered product sales - b2b",
-                "Type": "string"
-              },
-              {
-                "Name": "total order items",
-                "Type": "bigint"
-              },
-              {
-                "Name": "total order items - b2b",
+                "Name": "total_order_items",
                 "Type": "bigint"
               },
               {
@@ -1704,7 +2398,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "meesho-ishin-jypore",
+          "Name": "meesho-ishin-jypore_d_meesho_ishin_non_integrated_d_b2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for Meesho-Ishin-Jypore",
           "TableType": "EXTERNAL_TABLE",
@@ -1714,7 +2408,7 @@
             "CompressionType": "none",
             "Classification": "json",
             "TypeOfData": "file",
-            "skip.header.line.count": 1
+            "skip.header.line.count": 3
           },
           "StorageDescriptor": {
             "Columns": [
@@ -1723,127 +2417,127 @@
                 "Type": "string"
               },
               {
-                "Name": "Reason for Credit Entry",
+                "Name": "reason_for_credit_entry",
                 "Type": "string"
               },
               {
-                "Name": "Sub Order No",
+                "Name": "sub_order_no",
                 "Type": "string"
               },
               {
-                "Name": "Order Verification Date",
+                "Name": "order_verification_date",
                 "Type": "string"
               },
               {
-                "Name": "Order Date",
+                "Name": "order_date",
                 "Type": "string"
               },
               {
-                "Name": "Cust Name",
+                "Name": "cust_name",
                 "Type": "string"
               },
               {
-                "Name": "Cust address",
+                "Name": "cust_address",
                 "Type": "string"
               },
               {
-                "Name": "Reseller State",
+                "Name": "reseller_state",
                 "Type": "string"
               },
               {
-                "Name": "Product Name",
+                "Name": "product_name",
                 "Type": "string"
               },
               {
-                "Name": "SKU",
+                "Name": "sku",
                 "Type": "string"
               },
               {
-                "Name": "Size",
+                "Name": "size",
                 "Type": "string"
               },
               {
-                "Name": "Quantity",
+                "Name": "quantity",
                 "Type": "string"
               },
               {
-                "Name": "Product Unit Price (Incl. GST + Commission)",
+                "Name": "product_unit_price",
                 "Type": "string"
               },
               {
-                "Name": "Total Sales Amount (Incl. GST + Commission)",
+                "Name": "total_sales_amount",
                 "Type": "string"
               },
               {
-                "Name": "Net Sales Amount(Incl GST + Commision)",
+                "Name": "net_sales_amount",
                 "Type": "string"
               },
               {
-                "Name": "Delivery Revenue (Incl. of GST)",
+                "Name": "delivery_revenue",
                 "Type": "string"
               },
               {
-                "Name": "GST% on Product Price and Delivery",
+                "Name": "gst%_on_product_price_and_delivery",
                 "Type": "string"
               },
               {
-                "Name": "Product Taxable Value",
+                "Name": "product_taxable_value",
                 "Type": "string"
               },
               {
-                "Name": "Delivery Taxable Value",
+                "Name": "delivery_taxable_value",
                 "Type": "string"
               },
               {
-                "Name": "GST Payable on Product",
+                "Name": "gst_payable_on_product",
                 "Type": "string"
               },
               {
-                "Name": "GST Payable on Delivery",
+                "Name": "gst_payable_on_delivey",
                 "Type": "string"
               },
               {
-                "Name": "Total Meesho commission (Incl. GST)",
+                "Name": "total_meesho_commission",
                 "Type": "string"
               },
               {
-                "Name": "GST on Total Meesho Commission",
+                "Name": "gst_on_total_meesho_commission",
                 "Type": "string"
               },
               {
-                "Name": "Delivery Charge(excl Gst)",
+                "Name": "delivery_charges",
                 "Type": "string"
               },
               {
-                "Name": "GST on delivery charges",
+                "Name": "gst_on_delivery_charges",
                 "Type": "string"
               },
               {
-                "Name": "Supplier State",
+                "Name": "supplier_state",
                 "Type": "string"
               },
               {
-                "Name": "TCS (IGST)",
+                "Name": "tcs",
                 "Type": "string"
               },
               {
-                "Name": "TCS (0.5% CGST+0.5% SGST)",
+                "Name": "tcs_(0.5% CGST+0.5% SGST)",
                 "Type": "string"
               },
               {
-                "Name": "Settlement Amount to Supplier",
+                "Name": "settlement_amount_to_supplier",
                 "Type": "string"
               },
               {
-                "Name": "Invoice Download Link",
+                "Name": "invoice_download_link",
                 "Type": "string"
               },
               {
-                "Name": "CN Download Link",
+                "Name": "cn_download_link",
                 "Type": "string"
               }
             ],
-            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=folkulture/dip-type=US/",
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=meesho/dip-brand=ishin/dip-type=jypore_account/",
             "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
             "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
             "Compressed": false,
@@ -1875,7 +2569,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "meesho-hubberholme-sales",
+          "Name": "meesho-hubberholme-sales_d_meesho_hubberholme_non_integrated_d_b2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for Meesho-Hubberholme-Sales",
           "TableType": "EXTERNAL_TABLE",
@@ -1885,132 +2579,132 @@
             "CompressionType": "none",
             "Classification": "json",
             "TypeOfData": "file",
-            "skip.header.line.count": 1
+            "skip.header.line.count": 3
           },
           "StorageDescriptor": {
-            "Columns": [
+           "Columns": [
               {
                 "Name": "Type",
                 "Type": "string"
               },
               {
-                "Name": "Reason for Credit Entry",
+                "Name": "reason_for_credit_entry",
                 "Type": "string"
               },
               {
-                "Name": "Sub Order No",
+                "Name": "sub_order_no",
                 "Type": "string"
               },
               {
-                "Name": "Order Verification Date",
+                "Name": "order_verification_date",
                 "Type": "string"
               },
               {
-                "Name": "Order Date",
+                "Name": "order_date",
                 "Type": "string"
               },
               {
-                "Name": "Cust Name",
+                "Name": "cust_name",
                 "Type": "string"
               },
               {
-                "Name": "Cust address",
+                "Name": "cust_address",
                 "Type": "string"
               },
               {
-                "Name": "Reseller State",
+                "Name": "reseller_state",
                 "Type": "string"
               },
               {
-                "Name": "Product Name",
+                "Name": "product_name",
                 "Type": "string"
               },
               {
-                "Name": "SKU",
+                "Name": "sku",
                 "Type": "string"
               },
               {
-                "Name": "Size",
+                "Name": "size",
                 "Type": "string"
               },
               {
-                "Name": "Quantity",
+                "Name": "quantity",
                 "Type": "string"
               },
               {
-                "Name": "Product Unit Price (Incl. GST + Commission)",
+                "Name": "product_unit_price",
                 "Type": "string"
               },
               {
-                "Name": "Total Sales Amount (Incl. GST + Commission)",
+                "Name": "total_sales_amount",
                 "Type": "string"
               },
               {
-                "Name": "Net Sales Amount(Incl GST + Commision)",
+                "Name": "net_sales_amount",
                 "Type": "string"
               },
               {
-                "Name": "Delivery Revenue (Incl. of GST)",
+                "Name": "delivery_revenue",
                 "Type": "string"
               },
               {
-                "Name": "GST% on Product Price and Delivery",
+                "Name": "gst%_on_product_price_and_delivery",
                 "Type": "string"
               },
               {
-                "Name": "Product Taxable Value",
+                "Name": "product_taxable_value",
                 "Type": "string"
               },
               {
-                "Name": "Delivery Taxable Value",
+                "Name": "delivery_taxable_value",
                 "Type": "string"
               },
               {
-                "Name": "GST Payable on Product",
+                "Name": "gst_payable_on_product",
                 "Type": "string"
               },
               {
-                "Name": "GST Payable on Delivery",
+                "Name": "gst_payable_on_delivey",
                 "Type": "string"
               },
               {
-                "Name": "Total Meesho commission (Incl. GST)",
+                "Name": "total_meesho_commission",
                 "Type": "string"
               },
               {
-                "Name": "GST on Total Meesho Commission",
+                "Name": "gst_on_total_meesho_commission",
                 "Type": "string"
               },
               {
-                "Name": "Delivery Charge(excl Gst)",
+                "Name": "delivery_charges",
                 "Type": "string"
               },
               {
-                "Name": "GST on delivery charges",
+                "Name": "gst_on_delivery_charges",
                 "Type": "string"
               },
               {
-                "Name": "Supplier State",
+                "Name": "supplier_state",
                 "Type": "string"
               },
               {
-                "Name": "TCS (IGST)",
+                "Name": "tcs",
                 "Type": "string"
               },
               {
-                "Name": "TCS (0.5% CGST+0.5% SGST)",
+                "Name": "tcs_(0.5% CGST+0.5% SGST)",
                 "Type": "string"
               },
               {
-                "Name": "Settlement Amount to Supplier",
+                "Name": "settlement_amount_to_supplier",
                 "Type": "string"
               },
               {
-                "Name": "Invoice Download Link",
+                "Name": "invoice_download_link",
                 "Type": "string"
               },
               {
-                "Name": "CN Download Link",
+                "Name": "cn_download_link",
                 "Type": "string"
               }
             ],
@@ -2046,7 +2740,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "ajiojit-anubhutee-b2c",
+          "Name": "ajiojit-anubhutee-b2c_d_ajio_jit_anubhutee_b2c_non_integrated_d_b2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for AjioJit-Anubhutee-B2C",
           "TableType": "EXTERNAL_TABLE",
@@ -2229,7 +2923,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "myntra-dennislingo-sales",
+          "Name": "myntra-dennislingo-sales_d_myntra_non_integrated_d_b2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for Myntra-DenniLingo-Sales",
           "TableType": "EXTERNAL_TABLE",
@@ -2244,51 +2938,51 @@
           "StorageDescriptor": {
             "Columns": [
               {
-                "Name": "seller id",
+                "Name": "seller_id",
                 "Type": "bigint"
               },
               {
-                "Name": "warehouse id",
+                "Name": "warehouse_id",
                 "Type": "bigint"
               },
               {
-                "Name": "store order id",
+                "Name": "store_order_id",
                 "Type": "string"
               },
               {
-                "Name": "order release id",
+                "Name": "order_release_id",
                 "Type": "bigint"
               },
               {
-                "Name": "order line id",
+                "Name": "order_line_id",
                 "Type": "bigint"
               },
               {
-                "Name": "seller order id",
+                "Name": "seller_order_id",
                 "Type": "string"
               },
               {
-                "Name": "order id fk",
+                "Name": "order_id_fk",
                 "Type": "bigint"
               },
               {
-                "Name": "created on",
+                "Name": "created_on",
                 "Type": "string"
               },
               {
-                "Name": "style id",
+                "Name": "style_id",
                 "Type": "bigint"
               },
               {
-                "Name": "seller sku code",
+                "Name": "seller_sku_code",
                 "Type": "string"
               },
               {
-                "Name": "sku id",
+                "Name": "sku_id",
                 "Type": "bigint"
               },
               {
-                "Name": "myntra sku code",
+                "Name": "myntra_sku_code",
                 "Type": "string"
               },
               {
@@ -2296,7 +2990,7 @@
                 "Type": "string"
               },
               {
-                "Name": "vendor article number",
+                "Name": "vendor_article_number",
                 "Type": "string"
               },
               {
@@ -2304,91 +2998,91 @@
                 "Type": "string"
               },
               {
-                "Name": "style Name",
+                "Name": "style_name",
                 "Type": "string"
               },
               {
-                "Name": "article Type",
+                "Name": "article_type",
                 "Type": "string"
               },
               {
-                "Name": "article Type id",
+                "Name": "article_type_id",
                 "Type": "bigint"
               },
               {
-                "Name": "order status",
+                "Name": "order_status",
                 "Type": "string"
               },
               {
-                "Name": "packet id",
+                "Name": "packet_id",
                 "Type": "bigint"
               },
               {
-                "Name": "seller packe id",
+                "Name": "seller_packe_id",
                 "Type": "bigint"
               },
               {
-                "Name": "courier code",
+                "Name": "courier_code",
                 "Type": "string"
               },
               {
-                "Name": "order tracking number",
+                "Name": "order_tracking_number",
                 "Type": "string"
               },
               {
-                "Name": "seller warehouse id",
+                "Name": "seller_warehouse_id",
                 "Type": "bigint"
               },
               {
-                "Name": "cancellation reason id fk",
+                "Name": "cancellation_reason_id_fk",
                 "Type": "bigint"
               },
               {
-                "Name": "cancellation reason",
+                "Name": "cancellation_reason",
                 "Type": "string"
               },
               {
-                "Name": "packed on",
+                "Name": "packed_on",
                 "Type": "string"
               },
               {
-                "Name": "fmpu date",
+                "Name": "fmpu_date",
                 "Type": "string"
               },
               {
-                "Name": "inscanned on",
+                "Name": "inscanned_on",
                 "Type": "string"
               },
               {
-                "Name": "shipped on",
+                "Name": "shipped_on",
                 "Type": "string"
               },
               {
-                "Name": "delivered on",
+                "Name": "delivered_on",
                 "Type": "string"
               },
               {
-                "Name": "cancelled on",
+                "Name": "cancelled_on",
                 "Type": "string"
               },
               {
-                "Name": "rto creation date",
+                "Name": "rto_creation_date",
                 "Type": "string"
               },
               {
-                "Name": "lost date",
+                "Name": "lost_date",
                 "Type": "string"
               },
               {
-                "Name": "return creation date",
+                "Name": "return_creation_date",
                 "Type": "string"
               },
               {
-                "Name": "final amount",
+                "Name": "final_amount",
                 "Type": "double"
               },
               {
-                "Name": "total mrp",
+                "Name": "total_mrp",
                 "Type": "double"
               },
               {
@@ -2396,19 +3090,19 @@
                 "Type": "double"
               },
               {
-                "Name": "coupon discount",
+                "Name": "coupon_discount",
                 "Type": "double"
               },
               {
-                "Name": "shipping charge",
+                "Name": "shipping_charge",
                 "Type": "double"
               },
               {
-                "Name": "gift charge",
+                "Name": "gift_charge",
                 "Type": "double"
               },
               {
-                "Name": "tax recovery",
+                "Name": "tax_recovery",
                 "Type": "double"
               },
               {
@@ -2456,7 +3150,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "ajiojit-dennislingo-b2c",
+          "Name": "ajiojit-dennislingo-b2c_d_ajio_jit_dl_b2c_non_integrated_d_b2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for AjioJit-Dennislingo-B2C",
           "TableType": "EXTERNAL_TABLE",
@@ -2639,7 +3333,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "shopify-karagiri-domestic",
+          "Name": "shopify-karagiri-domestic_d_karagiri_domestic_non_integrated_d_d2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for Shopify-karagiri-DomesticTable",
           "TableType": "EXTERNAL_TABLE",
@@ -2654,11 +3348,11 @@
           "StorageDescriptor": {
             "Columns": [
               {
-                "Name": "order id",
+                "Name": "order_id",
                 "Type": "bigint"
               },
               {
-                "Name": "sale id",
+                "Name": "sale_id",
                 "Type": "bigint"
               },
               {
@@ -2670,51 +3364,51 @@
                 "Type": "string"
               },
               {
-                "Name": "transaction Type",
+                "Name": "transaction_type",
                 "Type": "string"
               },
               {
-                "Name": "sale Type",
+                "Name": "sale_type",
                 "Type": "string"
               },
               {
-                "Name": "sales channel",
+                "Name": "sales_channel",
                 "Type": "string"
               },
               {
-                "Name": "pos Location",
+                "Name": "pos_location",
                 "Type": "string"
               },
               {
-                "Name": "billing country",
+                "Name": "billing_country",
                 "Type": "string"
               },
               {
-                "Name": "billing region",
+                "Name": "billing_region",
                 "Type": "string"
               },
               {
-                "Name": "billing city",
+                "Name": "billing_city",
                 "Type": "string"
               },
               {
-                "Name": "shipping country",
+                "Name": "shipping_country",
                 "Type": "string"
               },
               {
-                "Name": "shipping region",
+                "Name": "shipping_region",
                 "Type": "string"
               },
               {
-                "Name": "shipping city",
+                "Name": "shipping_city",
                 "Type": "string"
               },
               {
-                "Name": "product Type",
+                "Name": "product_type",
                 "Type": "string"
               },
               {
-                "Name": "product vendor",
+                "Name": "product_vendor",
                 "Type": "string"
               },
               {
@@ -2726,15 +3420,15 @@
                 "Type": "string"
               },
               {
-                "Name": "variant sku",
+                "Name": "variant_sku",
                 "Type": "string"
               },
               {
-                "Name": "net quantity",
+                "Name": "net_quantity",
                 "Type": "bigint"
               },
               {
-                "Name": "gross sales",
+                "Name": "gross_sales",
                 "Type": "double"
               },
               {
@@ -2746,7 +3440,7 @@
                 "Type": "double"
               },
               {
-                "Name": "net sales",
+                "Name": "net_sales",
                 "Type": "double"
               },
               {
@@ -2758,7 +3452,7 @@
                 "Type": "double"
               },
               {
-                "Name": "total sales",
+                "Name": "total_sales",
                 "Type": "double"
               }
             ],
@@ -2794,7 +3488,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-            "Name": "amazon-folkulture-canada",
+            "Name": "amazon-folkulture-canada_d_amazon_folkulture_canada_non_integrated_d_b2c",
             "Retention": 0,
             "Description": "Glue Table which hold schema for Amazon-folkulture-Canada",
             "TableType": "EXTERNAL_TABLE",
@@ -2808,79 +3502,63 @@
             },
             "StorageDescriptor": {
               "Columns": [
-                {
-                  "Name": "(parent) asin",
-                  "Type": "string"
-                },
-                {
-                  "Name": "(child) asin",
-                  "Type": "string"
-                },
-                {
-                  "Name": "title",
-                  "Type": "string"
-                },
-                {
-                  "Name": "sku",
-                  "Type": "string"
-                },
-                {
-                  "Name": "sessions",
-                  "Type": "bigint"
-                },
-                {
-                  "Name": "session percentage",
-                  "Type": "string"
-                },
-                {
-                  "Name": "page views",
-                  "Type": "bigint"
-                },
-                {
-                  "Name": "page views percentage",
-                  "Type": "string"
-                },
-                {
-                  "Name": "featured offer (buy box) percentage",
-                  "Type": "string"
-                },
-                {
-                  "Name": "units ordered",
-                  "Type": "bigint"
-                },
-                {
-                  "Name": "units ordered – b2b",
-                  "Type": "bigint"
-                },
-                {
-                  "Name": "unit session percentage",
-                  "Type": "string"
-                },
-                {
-                  "Name": "units session percentage – b2b",
-                  "Type": "string"
-                },
-                {
-                  "Name": "ordered product sales",
-                  "Type": "string"
-                },
-                {
-                  "Name": "ordered product sales – b2b",
-                  "Type": "string"
-                },
-                {
-                  "Name": "total order items",
-                  "Type": "bigint"
-                },
-                {
-                  "Name": "total order items – b2b",
-                  "Type": "bigint"
-                },
-                {
-                  "Name": "date",
-                  "Type": "string"
-                }
-              ],
+              {
+                "Name": "parent_asin",
+                "Type": "string"
+              },
+              {
+                "Name": "child_asin",
+                "Type": "string"
+              },
+              {
+                "Name": "title",
+                "Type": "string"
+              },
+              {
+                "Name": "sku",
+                "Type": "string"
+              },
+              {
+                "Name": "sessions",
+                "Type": "string"
+              },
+              {
+                "Name": "session_percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "page_views",
+                "Type": "string"
+              },
+              {
+                "Name": "page_views_percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "featured_offer_buy box_percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "units_ordered",
+                "Type": "bigint"
+              },
+              {
+                "Name": "unit_session_percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "ordered_product_sales",
+                "Type": "string"
+              },
+              {
+                "Name": "total_order_items",
+                "Type": "bigint"
+              },
+              {
+                "Name": "date",
+                "Type": "string"
+              }
+            ],
               "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=folkulture/dip-type=canada/",
               "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
               "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
@@ -2913,7 +3591,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "amazon-denislingo-sku",
+          "Name": "amazon-denislingo-sku_d_amazon_dl_non_integrated_d_b2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for Amazon-DennisLingo-Sku",
           "TableType": "EXTERNAL_TABLE",
@@ -2928,11 +3606,11 @@
           "StorageDescriptor": {
             "Columns": [
               {
-                "Name": "(parent) asin",
+                "Name": "parent_asin",
                 "Type": "string"
               },
               {
-                "Name": "(child) asin",
+                "Name": "child_asin",
                 "Type": "string"
               },
               {
@@ -2945,38 +3623,38 @@
               },
               {
                 "Name": "sessions",
+                "Type": "string"
+              },
+              {
+                "Name": "session_percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "page_views",
+                "Type": "string"
+              },
+              {
+                "Name": "page_views_percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "featured_offer_buy box_percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "units_ordered",
                 "Type": "bigint"
               },
               {
-                "Name": "session percentage",
+                "Name": "unit_session_percentage",
                 "Type": "string"
               },
               {
-                "Name": "page views",
-                "Type": "bigint"
-              },
-              {
-                "Name": "page views percentage",
+                "Name": "ordered_product_sales",
                 "Type": "string"
               },
               {
-                "Name": "featured offer (buy box) percentage",
-                "Type": "string"
-              },
-              {
-                "Name": "units ordered",
-                "Type": "bigint"
-              },
-              {
-                "Name": "unit session percentage",
-                "Type": "string"
-              },
-              {
-                "Name": "ordered product sales",
-                "Type": "string"
-              },
-              {
-                "Name": "total order items",
+                "Name": "total_order_items",
                 "Type": "bigint"
               },
               {
@@ -3016,7 +3694,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "shopify-karagiri-international",
+          "Name": "shopify-karagiri-international_d_karagiri_international_non_integrated_d_d2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for Shopify-Karagiri-International",
           "TableType": "EXTERNAL_TABLE",
@@ -3031,11 +3709,11 @@
           "StorageDescriptor": {
             "Columns": [
               {
-                "Name": "order id",
+                "Name": "order_id",
                 "Type": "bigint"
               },
               {
-                "Name": "sale id",
+                "Name": "sale_id",
                 "Type": "bigint"
               },
               {
@@ -3047,51 +3725,51 @@
                 "Type": "string"
               },
               {
-                "Name": "transaction Type",
+                "Name": "transaction_type",
                 "Type": "string"
               },
               {
-                "Name": "sale Type",
+                "Name": "sale_type",
                 "Type": "string"
               },
               {
-                "Name": "sales channel",
+                "Name": "sales_channel",
                 "Type": "string"
               },
               {
-                "Name": "pos Location",
+                "Name": "pos_location",
                 "Type": "string"
               },
               {
-                "Name": "billing country",
+                "Name": "billing_country",
                 "Type": "string"
               },
               {
-                "Name": "billing region",
+                "Name": "billing_region",
                 "Type": "string"
               },
               {
-                "Name": "billing city",
+                "Name": "billing_city",
                 "Type": "string"
               },
               {
-                "Name": "shipping country",
+                "Name": "shipping_country",
                 "Type": "string"
               },
               {
-                "Name": "shipping region",
+                "Name": "shipping_region",
                 "Type": "string"
               },
               {
-                "Name": "shipping city",
+                "Name": "shipping_city",
                 "Type": "string"
               },
               {
-                "Name": "product Type",
+                "Name": "product_type",
                 "Type": "string"
               },
               {
-                "Name": "product vendor",
+                "Name": "product_vendor",
                 "Type": "string"
               },
               {
@@ -3103,15 +3781,15 @@
                 "Type": "string"
               },
               {
-                "Name": "variant sku",
+                "Name": "variant_sku",
                 "Type": "string"
               },
               {
-                "Name": "net quantity",
+                "Name": "net_quantity",
                 "Type": "bigint"
               },
               {
-                "Name": "gross sales",
+                "Name": "gross_sales",
                 "Type": "double"
               },
               {
@@ -3123,7 +3801,7 @@
                 "Type": "double"
               },
               {
-                "Name": "net sales",
+                "Name": "net_sales",
                 "Type": "double"
               },
               {
@@ -3135,7 +3813,7 @@
                 "Type": "double"
               },
               {
-                "Name": "total sales",
+                "Name": "total_sales",
                 "Type": "double"
               }
             ],
@@ -3171,7 +3849,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "meesho-ishin-mumbai",
+          "Name": "meesho-ishin-mumbai_d_meesho_ishin_non_integrated_d_b2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for Meesho-Ishin-Mumbai",
           "TableType": "EXTERNAL_TABLE",
@@ -3181,7 +3859,7 @@
             "CompressionType": "none",
             "Classification": "json",
             "TypeOfData": "file",
-            "skip.header.line.count": 1
+            "skip.header.line.count": 3
           },
           "StorageDescriptor": {
             "Columns": [
@@ -3190,127 +3868,127 @@
                 "Type": "string"
               },
               {
-                "Name": "Reason for Credit Entry",
+                "Name": "reason_for_credit_entry",
                 "Type": "string"
               },
               {
-                "Name": "Sub Order No",
+                "Name": "sub_order_no",
                 "Type": "string"
               },
               {
-                "Name": "Order Verification Date",
+                "Name": "order_verification_date",
                 "Type": "string"
               },
               {
-                "Name": "Order Date",
+                "Name": "order_date",
                 "Type": "string"
               },
               {
-                "Name": "Cust Name",
+                "Name": "cust_name",
                 "Type": "string"
               },
               {
-                "Name": "Cust address",
+                "Name": "cust_address",
                 "Type": "string"
               },
               {
-                "Name": "Reseller State",
+                "Name": "reseller_state",
                 "Type": "string"
               },
               {
-                "Name": "Product Name",
+                "Name": "product_name",
                 "Type": "string"
               },
               {
-                "Name": "SKU",
+                "Name": "sku",
                 "Type": "string"
               },
               {
-                "Name": "Size",
+                "Name": "size",
                 "Type": "string"
               },
               {
-                "Name": "Quantity",
+                "Name": "quantity",
                 "Type": "string"
               },
               {
-                "Name": "Product Unit Price (Incl. GST + Commission)",
+                "Name": "product_unit_price",
                 "Type": "string"
               },
               {
-                "Name": "Total Sales Amount (Incl. GST + Commission)",
+                "Name": "total_sales_amount",
                 "Type": "string"
               },
               {
-                "Name": "Net Sales Amount(Incl GST + Commision)",
+                "Name": "net_sales_amount",
                 "Type": "string"
               },
               {
-                "Name": "Delivery Revenue (Incl. of GST)",
+                "Name": "delivery_revenue",
                 "Type": "string"
               },
               {
-                "Name": "GST% on Product Price and Delivery",
+                "Name": "gst%_on_product_price_and_delivery",
                 "Type": "string"
               },
               {
-                "Name": "Product Taxable Value",
+                "Name": "product_taxable_value",
                 "Type": "string"
               },
               {
-                "Name": "Delivery Taxable Value",
+                "Name": "delivery_taxable_value",
                 "Type": "string"
               },
               {
-                "Name": "GST Payable on Product",
+                "Name": "gst_payable_on_product",
                 "Type": "string"
               },
               {
-                "Name": "GST Payable on Delivery",
+                "Name": "gst_payable_on_delivey",
                 "Type": "string"
               },
               {
-                "Name": "Total Meesho commission (Incl. GST)",
+                "Name": "total_meesho_commission",
                 "Type": "string"
               },
               {
-                "Name": "GST on Total Meesho Commission",
+                "Name": "gst_on_total_meesho_commission",
                 "Type": "string"
               },
               {
-                "Name": "Delivery Charge(excl Gst)",
+                "Name": "delivery_charges",
                 "Type": "string"
               },
               {
-                "Name": "GST on delivery charges",
+                "Name": "gst_on_delivery_charges",
                 "Type": "string"
               },
               {
-                "Name": "Supplier State",
+                "Name": "supplier_state",
                 "Type": "string"
               },
               {
-                "Name": "TCS (IGST)",
+                "Name": "tcs",
                 "Type": "string"
               },
               {
-                "Name": "TCS (0.5% CGST+0.5% SGST)",
+                "Name": "tcs_(0.5% CGST+0.5% SGST)",
                 "Type": "string"
               },
               {
-                "Name": "Settlement Amount to Supplier",
+                "Name": "settlement_amount_to_supplier",
                 "Type": "string"
               },
               {
-                "Name": "Invoice Download Link",
+                "Name": "invoice_download_link",
                 "Type": "string"
               },
               {
-                "Name": "CN Download Link",
+                "Name": "cn_download_link",
                 "Type": "string"
               }
             ],
-            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=folkulture/dip-type=US/",
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=meesho/dip-brand=ishin/dip-type=mumbai_account/",
             "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
             "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
             "Compressed": false,
@@ -3342,7 +4020,7 @@
       "Type": "AWS::Glue::Table",
       "Properties": {
         "TableInput": {
-          "Name": "amazon-folkulture-mexico",
+          "Name": "amazon-folkulture-mexico_d_amazon_folkulture_mexico_non_integrated_d_b2c",
           "Retention": 0,
           "Description": "Glue Table which hold schema for Amazon-folkulture-mexico",
           "TableType": "EXTERNAL_TABLE",
@@ -3357,11 +4035,11 @@
           "StorageDescriptor": {
             "Columns": [
               {
-                "Name": "(parent) asin",
+                "Name": "parent_asin",
                 "Type": "string"
               },
               {
-                "Name": "(child) asin",
+                "Name": "child_asin",
                 "Type": "string"
               },
               {
@@ -3374,38 +4052,38 @@
               },
               {
                 "Name": "sessions",
+                "Type": "string"
+              },
+              {
+                "Name": "session_percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "page_views",
+                "Type": "string"
+              },
+              {
+                "Name": "page_views_percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "featured_offer_buy box_percentage",
+                "Type": "string"
+              },
+              {
+                "Name": "units_ordered",
                 "Type": "bigint"
               },
               {
-                "Name": "session percentage",
+                "Name": "unit_session_percentage",
                 "Type": "string"
               },
               {
-                "Name": "page views",
-                "Type": "bigint"
-              },
-              {
-                "Name": "page views percentage",
+                "Name": "ordered_product_sales",
                 "Type": "string"
               },
               {
-                "Name": "featured offer (buy box) percentage",
-                "Type": "string"
-              },
-              {
-                "Name": "units ordered",
-                "Type": "bigint"
-              },
-              {
-                "Name": "unit session percentage",
-                "Type": "string"
-              },
-              {
-                "Name": "ordered product sales",
-                "Type": "string"
-              },
-              {
-                "Name": "total order items",
+                "Name": "total_order_items",
                 "Type": "bigint"
               },
               {
