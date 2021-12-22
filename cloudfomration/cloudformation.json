@@ -1703,177 +1703,6 @@
         "CatalogId": "092621740321"
       }
     },
-    "MeeshoAnubhuteeSalesTable": {
-      "Type": "AWS::Glue::Table",
-      "Properties": {
-        "TableInput": {
-          "Name": "meesho-anubhutee-sales_d_meesho_anubhutee_non_integrated_d_b2c",
-          "Retention": 0,
-          "Description": "Glue Table which hold schema for Meesho-Anubhutee-Sales",
-          "TableType": "EXTERNAL_TABLE",
-          "Parameters": {
-            "CrawlerSchemaSerializerVersion": "1.0",
-            "CrawlerSchemaDeserializerVersion": "1.0",
-            "CompressionType": "none",
-            "Classification": "json",
-            "TypeOfData": "file",
-            "skip.header.line.count": 3
-          },
-          "StorageDescriptor": {
-            "Columns": [
-              {
-                "Name": "Type",
-                "Type": "string"
-              },
-              {
-                "Name": "reason_for_credit_entry",
-                "Type": "string"
-              },
-              {
-                "Name": "sub_order_no",
-                "Type": "string"
-              },
-              {
-                "Name": "order_verification_date",
-                "Type": "string"
-              },
-              {
-                "Name": "order_date",
-                "Type": "string"
-              },
-              {
-                "Name": "cust_name",
-                "Type": "string"
-              },
-              {
-                "Name": "cust_address",
-                "Type": "string"
-              },
-              {
-                "Name": "reseller_state",
-                "Type": "string"
-              },
-              {
-                "Name": "product_name",
-                "Type": "string"
-              },
-              {
-                "Name": "sku",
-                "Type": "string"
-              },
-              {
-                "Name": "size",
-                "Type": "string"
-              },
-              {
-                "Name": "quantity",
-                "Type": "string"
-              },
-              {
-                "Name": "product_unit_price",
-                "Type": "string"
-              },
-              {
-                "Name": "total_sales_amount",
-                "Type": "string"
-              },
-              {
-                "Name": "net_sales_amount",
-                "Type": "string"
-              },
-              {
-                "Name": "delivery_revenue",
-                "Type": "string"
-              },
-              {
-                "Name": "gst%_on_product_price_and_delivery",
-                "Type": "string"
-              },
-              {
-                "Name": "product_taxable_value",
-                "Type": "string"
-              },
-              {
-                "Name": "delivery_taxable_value",
-                "Type": "string"
-              },
-              {
-                "Name": "gst_payable_on_product",
-                "Type": "string"
-              },
-              {
-                "Name": "gst_payable_on_delivey",
-                "Type": "string"
-              },
-              {
-                "Name": "total_meesho_commission",
-                "Type": "string"
-              },
-              {
-                "Name": "gst_on_total_meesho_commission",
-                "Type": "string"
-              },
-              {
-                "Name": "delivery_charges",
-                "Type": "string"
-              },
-              {
-                "Name": "gst_on_delivery_charges",
-                "Type": "string"
-              },
-              {
-                "Name": "supplier_state",
-                "Type": "string"
-              },
-              {
-                "Name": "tcs",
-                "Type": "string"
-              },
-              {
-                "Name": "tcs_(0.5% CGST+0.5% SGST)",
-                "Type": "string"
-              },
-              {
-                "Name": "settlement_amount_to_supplier",
-                "Type": "string"
-              },
-              {
-                "Name": "invoice_download_link",
-                "Type": "string"
-              },
-              {
-                "Name": "cn_download_link",
-                "Type": "string"
-              }
-            ],
-            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=meesho/dip-brand=anubhutee/dip-type=sales/",
-            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
-            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
-            "Compressed": false,
-            "NumberOfBuckets": -1,
-            "SerdeInfo": {
-              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
-              "Parameters": {
-                "field.delim": ","
-              }
-            },
-            "BucketColumns": [],
-            "SortColumns": [],
-            "Parameters": {
-              "CrawlerSchemaSerializerVersion": "1.0",
-              "CrawlerSchemaDeserializerVersion": "1.0",
-              "CompressionType": "none",
-              "Classification": "json",
-              "TypeOfData": "file",
-              "skip.header.line.count": 1
-            },
-            "StoredAsSubDirectories": false
-          }
-        },
-        "DatabaseName": "semi-automated",
-        "CatalogId": "092621740321"
-      }
-    },
     "AjioJitAnubhuteeB2BTable": {
       "Type": "AWS::Glue::Table",
       "Properties": {
@@ -2350,15 +2179,31 @@
                 "Type": "bigint"
               },
               {
+                "Name": "units_ordered_b2b",
+                "Type": "bigint"
+              },
+              {
                 "Name": "unit_session_percentage",
+                "Type": "string"
+              },
+               {
+                "Name": "unit_session_percentage_b2b",
                 "Type": "string"
               },
               {
                 "Name": "ordered_product_sales",
                 "Type": "string"
               },
+                 {
+                "Name": "ordered_product_sales_b2b",
+                "Type": "string"
+              },
               {
                 "Name": "total_order_items",
+                "Type": "bigint"
+              },
+                 {
+                "Name": "total_order_items_b2b",
                 "Type": "bigint"
               },
               {
@@ -2464,8 +2309,12 @@
                 "Name": "product_unit_price",
                 "Type": "string"
               },
-              {
+               {
                 "Name": "total_sales_amount",
+                "Type": "string"
+              },
+              {
+                "Name": "discount_to_reseller",
                 "Type": "string"
               },
               {
@@ -2477,7 +2326,7 @@
                 "Type": "string"
               },
               {
-                "Name": "gst%_on_product_price_and_delivery",
+                "Name": "gst_on_product_price_and_delivery",
                 "Type": "string"
               },
               {
@@ -2582,7 +2431,7 @@
             "skip.header.line.count": 3
           },
           "StorageDescriptor": {
-           "Columns": [
+            "Columns": [
               {
                 "Name": "Type",
                 "Type": "string"
@@ -2635,8 +2484,12 @@
                 "Name": "product_unit_price",
                 "Type": "string"
               },
-              {
+               {
                 "Name": "total_sales_amount",
+                "Type": "string"
+              },
+              {
+                "Name": "discount_to_reseller",
                 "Type": "string"
               },
               {
@@ -2648,7 +2501,182 @@
                 "Type": "string"
               },
               {
-                "Name": "gst%_on_product_price_and_delivery",
+                "Name": "gst_on_product_price_and_delivery",
+                "Type": "string"
+              },
+              {
+                "Name": "product_taxable_value",
+                "Type": "string"
+              },
+              {
+                "Name": "delivery_taxable_value",
+                "Type": "string"
+              },
+              {
+                "Name": "gst_payable_on_product",
+                "Type": "string"
+              },
+              {
+                "Name": "gst_payable_on_delivey",
+                "Type": "string"
+              },
+              {
+                "Name": "total_meesho_commission",
+                "Type": "string"
+              },
+              {
+                "Name": "gst_on_total_meesho_commission",
+                "Type": "string"
+              },
+              {
+                "Name": "delivery_charges",
+                "Type": "string"
+              },
+              {
+                "Name": "gst_on_delivery_charges",
+                "Type": "string"
+              },
+              {
+                "Name": "supplier_state",
+                "Type": "string"
+              },
+              {
+                "Name": "tcs",
+                "Type": "string"
+              },
+              {
+                "Name": "tcs_(0.5% CGST+0.5% SGST)",
+                "Type": "string"
+              },
+              {
+                "Name": "settlement_amount_to_supplier",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_download_link",
+                "Type": "string"
+              },
+              {
+                "Name": "cn_download_link",
+                "Type": "string"
+              }
+            ],,
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=meesho/dip-brand=hubberholme/dip-type=sales/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "MeeshoAnubhuteeSalesTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "meesho-anubhutee-sales_d_meesho_anubhutee_non_integrated_d_b2c",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Meesho-Anubhutee-Sales",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 3
+          },
+          "StorageDescriptor": {
+             "Columns": [
+              {
+                "Name": "Type",
+                "Type": "string"
+              },
+              {
+                "Name": "reason_for_credit_entry",
+                "Type": "string"
+              },
+              {
+                "Name": "sub_order_no",
+                "Type": "string"
+              },
+              {
+                "Name": "order_verification_date",
+                "Type": "string"
+              },
+              {
+                "Name": "order_date",
+                "Type": "string"
+              },
+              {
+                "Name": "cust_name",
+                "Type": "string"
+              },
+              {
+                "Name": "cust_address",
+                "Type": "string"
+              },
+              {
+                "Name": "reseller_state",
+                "Type": "string"
+              },
+              {
+                "Name": "product_name",
+                "Type": "string"
+              },
+              {
+                "Name": "sku",
+                "Type": "string"
+              },
+              {
+                "Name": "size",
+                "Type": "string"
+              },
+              {
+                "Name": "quantity",
+                "Type": "string"
+              },
+              {
+                "Name": "product_unit_price",
+                "Type": "string"
+              },
+               {
+                "Name": "total_sales_amount",
+                "Type": "string"
+              },
+              {
+                "Name": "discount_to_reseller",
+                "Type": "string"
+              },
+              {
+                "Name": "net_sales_amount",
+                "Type": "string"
+              },
+              {
+                "Name": "delivery_revenue",
+                "Type": "string"
+              },
+              {
+                "Name": "gst_on_product_price_and_delivery",
                 "Type": "string"
               },
               {
@@ -2708,7 +2736,182 @@
                 "Type": "string"
               }
             ],
-            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=meesho/dip-brand=hubberholme/dip-type=sales/",
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=meesho/dip-brand=anubhutee/dip-type=sales/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "MeeshoIshinMumbaiTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "meesho-ishin-mumbai_d_meesho_ishin_non_integrated_d_b2c",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Meesho-Ishin-Mumbai",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 3
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "Type",
+                "Type": "string"
+              },
+              {
+                "Name": "reason_for_credit_entry",
+                "Type": "string"
+              },
+              {
+                "Name": "sub_order_no",
+                "Type": "string"
+              },
+              {
+                "Name": "order_verification_date",
+                "Type": "string"
+              },
+              {
+                "Name": "order_date",
+                "Type": "string"
+              },
+              {
+                "Name": "cust_name",
+                "Type": "string"
+              },
+              {
+                "Name": "cust_address",
+                "Type": "string"
+              },
+              {
+                "Name": "reseller_state",
+                "Type": "string"
+              },
+              {
+                "Name": "product_name",
+                "Type": "string"
+              },
+              {
+                "Name": "sku",
+                "Type": "string"
+              },
+              {
+                "Name": "size",
+                "Type": "string"
+              },
+              {
+                "Name": "quantity",
+                "Type": "string"
+              },
+              {
+                "Name": "product_unit_price",
+                "Type": "string"
+              },
+               {
+                "Name": "total_sales_amount",
+                "Type": "string"
+              },
+              {
+                "Name": "discount_to_reseller",
+                "Type": "string"
+              },
+              {
+                "Name": "net_sales_amount",
+                "Type": "string"
+              },
+              {
+                "Name": "delivery_revenue",
+                "Type": "string"
+              },
+              {
+                "Name": "gst_on_product_price_and_delivery",
+                "Type": "string"
+              },
+              {
+                "Name": "product_taxable_value",
+                "Type": "string"
+              },
+              {
+                "Name": "delivery_taxable_value",
+                "Type": "string"
+              },
+              {
+                "Name": "gst_payable_on_product",
+                "Type": "string"
+              },
+              {
+                "Name": "gst_payable_on_delivey",
+                "Type": "string"
+              },
+              {
+                "Name": "total_meesho_commission",
+                "Type": "string"
+              },
+              {
+                "Name": "gst_on_total_meesho_commission",
+                "Type": "string"
+              },
+              {
+                "Name": "delivery_charges",
+                "Type": "string"
+              },
+              {
+                "Name": "gst_on_delivery_charges",
+                "Type": "string"
+              },
+              {
+                "Name": "supplier_state",
+                "Type": "string"
+              },
+              {
+                "Name": "tcs",
+                "Type": "string"
+              },
+              {
+                "Name": "tcs_(0.5% CGST+0.5% SGST)",
+                "Type": "string"
+              },
+              {
+                "Name": "settlement_amount_to_supplier",
+                "Type": "string"
+              },
+              {
+                "Name": "invoice_download_link",
+                "Type": "string"
+              },
+              {
+                "Name": "cn_download_link",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=meesho/dip-brand=ishin/dip-type=mumbai_account/",
             "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
             "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
             "Compressed": false,
@@ -3543,15 +3746,31 @@
                 "Type": "bigint"
               },
               {
+                "Name": "units_ordered_b2b",
+                "Type": "bigint"
+              },
+              {
                 "Name": "unit_session_percentage",
+                "Type": "string"
+              },
+               {
+                "Name": "unit_session_percentage_b2b",
                 "Type": "string"
               },
               {
                 "Name": "ordered_product_sales",
                 "Type": "string"
               },
+                 {
+                "Name": "ordered_product_sales_b2b",
+                "Type": "string"
+              },
               {
                 "Name": "total_order_items",
+                "Type": "bigint"
+              },
+                 {
+                "Name": "total_order_items_b2b",
                 "Type": "bigint"
               },
               {
@@ -3663,6 +3882,101 @@
               }
             ],
             "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=dennis_lingo/dip-type=sku/",
+            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+            "Compressed": false,
+            "NumberOfBuckets": -1,
+            "SerdeInfo": {
+              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+              "Parameters": {
+                "field.delim": ","
+              }
+            },
+            "BucketColumns": [],
+            "SortColumns": [],
+            "Parameters": {
+              "CrawlerSchemaSerializerVersion": "1.0",
+              "CrawlerSchemaDeserializerVersion": "1.0",
+              "CompressionType": "none",
+              "Classification": "json",
+              "TypeOfData": "file",
+              "skip.header.line.count": 1
+            },
+            "StoredAsSubDirectories": false
+          }
+        },
+        "DatabaseName": "semi-automated",
+        "CatalogId": "092621740321"
+      }
+    },
+    "AmazonVillainSalesTable": {
+      "Type": "AWS::Glue::Table",
+      "Properties": {
+        "TableInput": {
+          "Name": "amazon-villain-sales_d_amazon_villain_non_integrated_d_b2b",
+          "Retention": 0,
+          "Description": "Glue Table which hold schema for Amazon-Villain-Sales",
+          "TableType": "EXTERNAL_TABLE",
+          "Parameters": {
+            "CrawlerSchemaSerializerVersion": "1.0",
+            "CrawlerSchemaDeserializerVersion": "1.0",
+            "CompressionType": "none",
+            "Classification": "json",
+            "TypeOfData": "file",
+            "skip.header.line.count": 1
+          },
+          "StorageDescriptor": {
+            "Columns": [
+              {
+                "Name": "asin",
+                "Type": "string"
+              },
+              {
+                "Name": "item_name",
+                "Type": "string"
+              },
+              {
+                "Name": "lbr_brand_name",
+                "Type": "string"
+              },
+              {
+                "Name": "order_month",
+                "Type": "string"
+              },
+              {
+                "Name": "order_day",
+                "Type": "string"
+              },
+              {
+                "Name": "order_year",
+                "Type": "string"
+              },
+              {
+                "Name": "order_amt",
+                "Type": "int"
+              },
+              {
+                "Name": "order_quantity",
+                "Type": "int"
+              },
+              {
+                "Name": "category",
+                "Type": "string"
+              },
+              {
+                "Name": "sub_category",
+                "Type": "bigint"
+              },
+              {
+                "Name": "state_name",
+                "Type": "string"
+              },
+              {
+                "Name": "postal_code",
+                "Type": "string"
+              }
+            ],
+            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=amazon/dip-brand=villain/dip-type=sku/",
             "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
             "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
             "Compressed": false,
@@ -3818,177 +4132,6 @@
               }
             ],
             "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=shopify/dip-brand=karagiri/dip-type=international/",
-            "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
-            "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
-            "Compressed": false,
-            "NumberOfBuckets": -1,
-            "SerdeInfo": {
-              "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
-              "Parameters": {
-                "field.delim": ","
-              }
-            },
-            "BucketColumns": [],
-            "SortColumns": [],
-            "Parameters": {
-              "CrawlerSchemaSerializerVersion": "1.0",
-              "CrawlerSchemaDeserializerVersion": "1.0",
-              "CompressionType": "none",
-              "Classification": "json",
-              "TypeOfData": "file",
-              "skip.header.line.count": 1
-            },
-            "StoredAsSubDirectories": false
-          }
-        },
-        "DatabaseName": "semi-automated",
-        "CatalogId": "092621740321"
-      }
-    },
-    "MeeshoIshinMumbaiTable": {
-      "Type": "AWS::Glue::Table",
-      "Properties": {
-        "TableInput": {
-          "Name": "meesho-ishin-mumbai_d_meesho_ishin_non_integrated_d_b2c",
-          "Retention": 0,
-          "Description": "Glue Table which hold schema for Meesho-Ishin-Mumbai",
-          "TableType": "EXTERNAL_TABLE",
-          "Parameters": {
-            "CrawlerSchemaSerializerVersion": "1.0",
-            "CrawlerSchemaDeserializerVersion": "1.0",
-            "CompressionType": "none",
-            "Classification": "json",
-            "TypeOfData": "file",
-            "skip.header.line.count": 3
-          },
-          "StorageDescriptor": {
-            "Columns": [
-              {
-                "Name": "Type",
-                "Type": "string"
-              },
-              {
-                "Name": "reason_for_credit_entry",
-                "Type": "string"
-              },
-              {
-                "Name": "sub_order_no",
-                "Type": "string"
-              },
-              {
-                "Name": "order_verification_date",
-                "Type": "string"
-              },
-              {
-                "Name": "order_date",
-                "Type": "string"
-              },
-              {
-                "Name": "cust_name",
-                "Type": "string"
-              },
-              {
-                "Name": "cust_address",
-                "Type": "string"
-              },
-              {
-                "Name": "reseller_state",
-                "Type": "string"
-              },
-              {
-                "Name": "product_name",
-                "Type": "string"
-              },
-              {
-                "Name": "sku",
-                "Type": "string"
-              },
-              {
-                "Name": "size",
-                "Type": "string"
-              },
-              {
-                "Name": "quantity",
-                "Type": "string"
-              },
-              {
-                "Name": "product_unit_price",
-                "Type": "string"
-              },
-              {
-                "Name": "total_sales_amount",
-                "Type": "string"
-              },
-              {
-                "Name": "net_sales_amount",
-                "Type": "string"
-              },
-              {
-                "Name": "delivery_revenue",
-                "Type": "string"
-              },
-              {
-                "Name": "gst%_on_product_price_and_delivery",
-                "Type": "string"
-              },
-              {
-                "Name": "product_taxable_value",
-                "Type": "string"
-              },
-              {
-                "Name": "delivery_taxable_value",
-                "Type": "string"
-              },
-              {
-                "Name": "gst_payable_on_product",
-                "Type": "string"
-              },
-              {
-                "Name": "gst_payable_on_delivey",
-                "Type": "string"
-              },
-              {
-                "Name": "total_meesho_commission",
-                "Type": "string"
-              },
-              {
-                "Name": "gst_on_total_meesho_commission",
-                "Type": "string"
-              },
-              {
-                "Name": "delivery_charges",
-                "Type": "string"
-              },
-              {
-                "Name": "gst_on_delivery_charges",
-                "Type": "string"
-              },
-              {
-                "Name": "supplier_state",
-                "Type": "string"
-              },
-              {
-                "Name": "tcs",
-                "Type": "string"
-              },
-              {
-                "Name": "tcs_(0.5% CGST+0.5% SGST)",
-                "Type": "string"
-              },
-              {
-                "Name": "settlement_amount_to_supplier",
-                "Type": "string"
-              },
-              {
-                "Name": "invoice_download_link",
-                "Type": "string"
-              },
-              {
-                "Name": "cn_download_link",
-                "Type": "string"
-              }
-            ],
-            "Location": "s3://semi-automated-dev/non-integrated-manual/dip-channel=meesho/dip-brand=ishin/dip-type=mumbai_account/",
             "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
             "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
             "Compressed": false,
