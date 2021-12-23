@@ -19,8 +19,6 @@ glueContext = GlueContext(SparkContext.getOrCreate())
 spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
 spark.conf.set("spark.sql.debug.maxToStringFields", 1000)
 
-
-
 today = date.today()
 report_date = today - timedelta(days=1)
 print("report date is: ", report_date)
@@ -52,8 +50,8 @@ lower(brand_name) as brands,
  WHEN  date(date_add(date('{report_date}'),-6)) THEN date(date_add(date('{report_date}'),-6))
  ELSE date(order_date)
  END as period ,
- sum(gmv) as gmv_all,
- sum(qty) as unit_sold_all,
+ sum(gmv) as gmv,
+ sum(qty) as unit_sold,
 date(date_add(date('{report_date}'),0)) as actual_date
 from view_nonIntegrated_df
 where date(order_date) > date(date_add(date('{report_date}'),-6))
@@ -68,8 +66,8 @@ print("Order Non Integrated  All Period  calculated ")
 nonIntegratedMTD_SQL = spark.sql(f"""select lower(channel_name) as channel,
 lower(brand_name) as brands,
 'MTD' as period,
-sum(gmv) as gmv_all,
-sum(qty) as unit_sold_all,
+sum(gmv) as gmv,
+sum(qty) as unit_sold,
 date(date_trunc('month',date('{report_date}'))) as actual_date
 from view_nonIntegrated_df
 where date(order_date) between date(date_trunc('month',date('{report_date}'))) and date('{report_date}')
@@ -84,8 +82,8 @@ print("Order Non Integrated  MTD calculated ")
 nonIntegratedAVGMTD_SQL = spark.sql(f"""select lower(channel_name) as channel,
 lower(brand_name) as brands,
 'AVG MTD' as period,
-sum(gmv)/count(qty) as gmv_all,
-sum(qty)/count(distinct date(order_date)) as unit_sold_all,
+sum(gmv)/count(qty) as gmv,
+sum(qty)/count(distinct date(order_date)) as unit_sold,
 date(date_trunc('month',date('{report_date}'))) as actual_date
 from view_nonIntegrated_df
 where date(order_date) between date(date_trunc('month',date('{report_date}'))) and date('{report_date}')
@@ -122,8 +120,8 @@ lower(brand_name) as brands,
  WHEN  date(date_add(date('{report_date}'),-6)) THEN date(date_add(date('{report_date}'),-6))
  ELSE date(order_date)
  END as period ,
-sum(total_price) as gmv_all,
-sum(quantity) as unit_sold_all,
+sum(total_price) as gmv,
+sum(quantity) as unit_sold,
 date(date_add(date('{report_date}'),0)) as actual_date
 from view_integrated_df
 where date(order_date) > date(date_add(date('{report_date}'),-6)) and channel_order_sku_id not in
@@ -140,8 +138,8 @@ print(" Order Integrated All period calculated ")
 orderIntegratedMTD_SQL = spark.sql(f"""select lower(channel_name) as channel,
 lower(brand_name) as brands,
 'MTD' as period,
-sum(total_price) as gmv_all,
-sum(quantity) as unit_sold_all,
+sum(total_price) as gmv,
+sum(quantity) as unit_sold,
 date(date_trunc('month',date('{report_date}'))) as actual_date
 from view_integrated_df
 where date(order_date) between date(date_trunc('month',date('{report_date}'))) and date('{report_date}')  and channel_order_sku_id not in (
@@ -156,8 +154,8 @@ print(" Order Integrated MTD calculated ")
 orderIntegratedAVGMTD_SQL = spark.sql(f"""select lower(channel_name) as channel,
 lower(brand_name) as brands,
 'AVG MTD' as period,
-sum(total_price)/count(quantity) as gmv_all,
-sum(quantity)/count(distinct date(order_date)) as unit_sold_all,
+sum(total_price)/count(quantity) as gmv,
+sum(quantity)/count(distinct date(order_date)) as unit_sold,
 date(date_trunc('month',date('{report_date}'))) as actual_date
 from view_integrated_df
 where date(order_date) between date(date_trunc('month',date('{report_date}'))) and date('{report_date}') and channel_order_sku_id not in (
@@ -184,15 +182,16 @@ print("#####################################")
 print("Data Union completed")
 
 
-misDf.withColumn("period", when(misDf.period == report_date- timedelta(days=0),"DO") \
-      .when(misDf.period == report_date- timedelta(days=1),"D1") \
-      .when(misDf.period == report_date- timedelta(days=2),"D2") \
-      .when(misDf.period == report_date- timedelta(days=3),"D3") \
-      .when(misDf.period == report_date- timedelta(days=4),"D4") \
-      .when(misDf.period == report_date- timedelta(days=5),"D5") \
-      .when(misDf.period == report_date- timedelta(days=6),"D6") \
-      .otherwise(misDf.period))
+# misDf.withColumn("period", when(misDf.period == (report_date- timedelta(days=0)),"DO") \
+#       .when(misDf.period == (report_date- timedelta(days=1)),"D1") \
+#       .when(misDf.period == (report_date- timedelta(days=2)),"D2") \
+#       .when(misDf.period == (report_date- timedelta(days=3)),"D3") \
+#       .when(misDf.period == (report_date- timedelta(days=4)),"D4") \
+#       .when(misDf.period == (report_date- timedelta(days=5)),"D5") \
+#       .when(misDf.period == (report_date- timedelta(days=6)),"D6") \
+#       .otherwise(misDf.period))
 
+# misDf.explain()
 
 ###############################################
 ### Saving data to redhsift  :-mis report table
@@ -211,6 +210,11 @@ glueContext.write_dynamic_frame.from_jdbc_conf(
 )
 
 print("saving data to Database  completed")
+
+
+
+
+
 
 
 
