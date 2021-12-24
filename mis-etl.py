@@ -20,6 +20,7 @@ spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
 spark.conf.set("spark.sql.debug.maxToStringFields", 1000)
 
 today = date.today()
+print("date is today " + str(today) )
 report_date = today - timedelta(days=1)
 print("report date is: ", report_date)
 
@@ -126,7 +127,7 @@ date(date_add(date('{report_date}'),0)) as actual_date
 from view_integrated_df
 where date(order_date) > date(date_add(date('{report_date}'),-6)) and channel_order_sku_id not in
 (
-select channel_order_sku_id from view_integrated_df where (lower(brand_name) in ('anubhutee','ishin') and lower(channel_name) like '%flip%'))
+select channel_order_sku_id from view_integrated_df where (lower(brand_name) in ('anubhutee','ishin') and lower(channel_name) like '%flip%' or (lower(brand_name)='lilpicks' and lower(channel_name)='firstcry') or (lower(brand_name)='ishin' and lower(channel_name) like '%myn%' and date(order_date)<=date('2021-12-01'))))
 group by 1,2,3
 """)
 
@@ -143,7 +144,7 @@ sum(quantity) as unit_sold,
 date(date_trunc('month',date('{report_date}'))) as actual_date
 from view_integrated_df
 where date(order_date) between date(date_trunc('month',date('{report_date}'))) and date('{report_date}')  and channel_order_sku_id not in (
-select channel_order_sku_id from view_integrated_df where (lower(brand_name) in ('anubhutee','ishin') and lower(channel_name) like '%flip%'))
+select channel_order_sku_id from view_integrated_df where (lower(brand_name) in ('anubhutee','ishin') and lower(channel_name) like '%flip%' or (lower(brand_name)='lilpicks' and lower(channel_name)='firstcry') or (lower(brand_name)='ishin' and lower(channel_name) like '%myn%' and date(order_date)<=date('2021-12-01'))))
 group by 1,2,3
 """)
 #orderIntegratedMTD_SQL.show()
@@ -159,7 +160,7 @@ sum(quantity)/count(distinct date(order_date)) as unit_sold,
 date(date_trunc('month',date('{report_date}'))) as actual_date
 from view_integrated_df
 where date(order_date) between date(date_trunc('month',date('{report_date}'))) and date('{report_date}') and channel_order_sku_id not in (
-select channel_order_sku_id from view_integrated_df where (lower(brand_name) in ('anubhutee','ishin') and lower(channel_name) like '%flip%'))
+select channel_order_sku_id from view_integrated_df where (lower(brand_name) in ('anubhutee','ishin') and lower(channel_name) like '%flip%' or (lower(brand_name)='lilpicks' and lower(channel_name)='firstcry') or (lower(brand_name)='ishin' and lower(channel_name) like '%myn%' and date(order_date)<=date('2021-12-01'))))
 group by 1,2,3
 """)
 
@@ -176,6 +177,12 @@ mtdCombinedDf = mtdDF.union(avgMtdDF).distinct()  ##Imitating Union ALL
 misDf=periodDF.union(mtdCombinedDf).distinct() ##Imitating Union ALL
 
 print("Schema for the final Data Frame is :")
+
+#misDf = misDf.filter(misDf.actual_date!=(to_date(today,'yyyy-MM-dd')))
+
+misDf.filter(misDf("actual_date").lt(today))
+
+
 misDf.printSchema()
 print("#####################################")
 
